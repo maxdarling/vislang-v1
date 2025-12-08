@@ -3,7 +3,7 @@ import {
   type NodeProps,
   type Node,
   useNodeConnections,
-  useReactFlow,
+  useNodesData,
 } from "@xyflow/react";
 import CustomHandle from "../handles/CustomHandle";
 
@@ -11,15 +11,14 @@ type DisplayNodeData = { val?: number };
 type DisplayNode = Node<DisplayNodeData, "display">;
 
 export function DisplayNode(_props: NodeProps<DisplayNode>) {
-  const { getNode } = useReactFlow();
   const inConnections = useNodeConnections({
     handleType: "target",
   });
   const maxConnections = 1;
 
   const connection = inConnections[0];
-  const sourceNode = connection ? getNode(connection.source) : null;
-  const val = (sourceNode?.data as { val?: number } | undefined)?.val;
+  const sourceNodeData = useNodesData(connection?.source);
+  const val = (sourceNodeData?.data as { val?: number } | undefined)?.val;
 
   return (
     <>

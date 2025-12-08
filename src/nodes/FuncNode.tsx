@@ -1,18 +1,30 @@
 import {
   Handle,
   Position,
-  type NodeProps,
-  type Node,
   useNodeConnections,
   useReactFlow,
   useNodesData,
 } from "@xyflow/react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
-type PlusNodeData = { val: number };
-type PlusNode = Node<PlusNodeData, "plus">;
+type FuncNodeData = { val: number };
 
-export function PlusNode({ id }: NodeProps<Node<PlusNodeData, "plus">>) {
+type FuncNodeProps = {
+  id: string;
+  data?: FuncNodeData;
+  label: string;
+  reducer: (acc: number, curr: number) => number;
+  initialValue: number;
+  backgroundColor?: string;
+};
+
+export function FuncNode({
+  id,
+  label,
+  reducer,
+  initialValue,
+  backgroundColor = "orange",
+}: FuncNodeProps) {
   const { updateNodeData } = useReactFlow();
 
   const inConnections = useNodeConnections({
@@ -22,17 +34,20 @@ export function PlusNode({ id }: NodeProps<Node<PlusNodeData, "plus">>) {
   const sourceNodesData = useNodesData(sourceNodeIds);
 
   // note: below typing is messy. i'm not happy with it yet.
-  const input: number[] = sourceNodesData
-    .map((nodeData) => {
-      return (nodeData?.data as { val: number } | undefined)?.val;
-    })
-    .filter((val): val is number => typeof val === "number");
-
-  const sum = input.reduce((acc: number, curr: number) => acc + curr, 0);
+  const value = useMemo(
+    () =>
+      sourceNodesData
+        .map((nodeData) => {
+          return (nodeData?.data as { val: number } | undefined)?.val;
+        })
+        .filter((val): val is number => typeof val === "number")
+        .reduce(reducer, initialValue),
+    [sourceNodesData, reducer, initialValue],
+  );
 
   useEffect(() => {
-    updateNodeData(id, { val: sum });
-  }, [id, sum, updateNodeData]);
+    updateNodeData(id, { val: value });
+  }, [id, value, updateNodeData]);
 
   return (
     <>
@@ -45,7 +60,7 @@ export function PlusNode({ id }: NodeProps<Node<PlusNodeData, "plus">>) {
       <div
         className="react-flow__node-default"
         style={{
-          backgroundColor: "orange",
+          backgroundColor,
           width: "50px",
           height: "50px",
           borderRadius: "4px",
@@ -55,7 +70,9 @@ export function PlusNode({ id }: NodeProps<Node<PlusNodeData, "plus">>) {
           padding: 0,
         }}
       >
-        {`+ (${sum})`}
+        {label}
+        <br />
+        {`(${value})`}
       </div>
       <Handle type="source" position={Position.Right} isConnectable={true} />
     </>

@@ -15,12 +15,18 @@ import {
   useEdgesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { PlusNode } from "./nodes/PlusNode";
+import { AddNode } from "./nodes/AddNode";
+import { SubNode } from "./nodes/SubNode";
+import { MulNode } from "./nodes/MulNode";
+import { DivNode } from "./nodes/DivNode";
 import { DataNode } from "./nodes/DataNode";
 import { DisplayNode } from "./nodes/DisplayNode";
 
 const nodeTypes = {
-  plus: PlusNode,
+  add: AddNode,
+  sub: SubNode,
+  mul: MulNode,
+  div: DivNode,
   data: DataNode,
   display: DisplayNode,
 };
@@ -40,14 +46,26 @@ const initialNodes: Node[] = [
   },
   {
     id: "n3",
-    type: "plus",
+    type: "mul",
     position: { x: 100, y: 50 },
     data: {},
   },
   {
     id: "n4",
+    type: "data",
+    position: { x: 100, y: 150 },
+    data: { val: 3 },
+  },
+  {
+    id: "n5",
+    type: "add",
+    position: { x: 200, y: 100 },
+    data: {},
+  },
+  {
+    id: "n6",
     type: "display",
-    position: { x: 200, y: 50 },
+    position: { x: 300, y: 100 },
     data: {},
   },
 ];
@@ -55,7 +73,9 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   { id: "n1-n3", source: "n1", target: "n3" },
   { id: "n2-n3", source: "n2", target: "n3" },
-  { id: "n3-n4", source: "n3", target: "n4" },
+  { id: "n3-n5", source: "n3", target: "n5" },
+  { id: "n4-n5", source: "n4", target: "n5" },
+  { id: "n5-n6", source: "n5", target: "n6" },
 ];
 
 export default function App() {
