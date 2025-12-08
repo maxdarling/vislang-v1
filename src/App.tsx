@@ -11,14 +11,18 @@ import {
   type NodeChange,
   type EdgeChange,
   type Connection,
+  useNodesState,
+  useEdgesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { PlusNode } from "./PlusNode";
-import { DataNode } from "./DataNode";
+import { PlusNode } from "./nodes/PlusNode";
+import { DataNode } from "./nodes/DataNode";
+import { DisplayNode } from "./nodes/DisplayNode";
 
 const nodeTypes = {
   plus: PlusNode,
   data: DataNode,
+  display: DisplayNode,
 };
 
 const initialNodes: Node[] = [
@@ -26,13 +30,13 @@ const initialNodes: Node[] = [
     id: "n1",
     type: "data",
     position: { x: 0, y: 0 },
-    data: {},
+    data: { val: 1 },
   },
   {
     id: "n2",
     type: "data",
     position: { x: 0, y: 100 },
-    data: {},
+    data: { val: 2 },
   },
   {
     id: "n3",
@@ -55,21 +59,21 @@ const initialEdges: Edge[] = [
 ];
 
 export default function App() {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes); // todo: understand this and delete below
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
-  }, []);
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) =>
-      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    []
-  );
+  // const onNodesChange = useCallback((changes: NodeChange[]) => {
+  //   setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
+  // }, []);
+  // const onEdgesChange = useCallback(
+  //   (changes: EdgeChange[]) =>
+  //     setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
+  //   []
+  // );
   const onConnect = useCallback(
     (params: Connection) =>
       setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    []
+    [],
   );
 
   return (

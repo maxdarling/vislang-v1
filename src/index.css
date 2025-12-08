@@ -1,0 +1,12 @@
+.react-flow {
+  --xy-theme-selected: #f57dbd;
+}
+
+.react-flow__handle.connectable {
+  border-color: var(--xy-theme-selected);
+  background: var(--xy-theme-selected);
+
+  /* &:hover {
+    background: red;
+  } */
+}

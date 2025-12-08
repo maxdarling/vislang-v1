@@ -1,17 +1,33 @@
-import { useState, useRef, useEffect } from "react";
-import { Handle, Position, type NodeProps, type Node } from "@xyflow/react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import {
+  Handle,
+  Position,
+  type NodeProps,
+  type Node,
+  useReactFlow,
+} from "@xyflow/react";
 
-type DataNodeData = {
-  label?: string;
-};
+type DataNodeData = { val: number };
+type DataNode = Node<DataNodeData, "data">;
 
-export function DataNode({ data }: NodeProps<Node<DataNodeData, "data">>) {
+export function DataNode({ id, data }: NodeProps<DataNode>) {
+  // note from docs: you don't want to use data object in UI state directly
   // real state
-  const [value, setValue] = useState<string>("");
+  const { updateNodeData } = useReactFlow();
+  const [value, setValue] = useState<number>(data.val);
 
   // UI state
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const onChange = useCallback(
+    (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const numValue = parseInt(evt.target.value) || 0;
+      setValue(numValue);
+      updateNodeData(id, { val: numValue });
+    },
+    [id, updateNodeData],
+  );
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -55,7 +71,7 @@ export function DataNode({ data }: NodeProps<Node<DataNodeData, "data">>) {
             ref={inputRef}
             type="text"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={onChange}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             className="nodrag"
