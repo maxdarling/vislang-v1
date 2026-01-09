@@ -1,18 +1,16 @@
-import { useState, useCallback } from "react";
+import { useCallback, useRef } from "react";
 import {
   ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
+  ReactFlowProvider,
   addEdge,
   Background,
   Controls,
   type Node,
   type Edge,
-  type NodeChange,
-  type EdgeChange,
   type Connection,
   useNodesState,
   useEdgesState,
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { AddNode } from "./nodes/AddNode";
@@ -21,6 +19,8 @@ import { MulNode } from "./nodes/MulNode";
 import { DivNode } from "./nodes/DivNode";
 import { DataNode } from "./nodes/DataNode";
 import { DisplayNode } from "./nodes/DisplayNode";
+import Sidebar from "./Sidebar";
+import { useDnD, DnDProvider } from "./DnDContext";
 
 const nodeTypes = {
   add: AddNode,
@@ -78,38 +78,82 @@ const initialEdges: Edge[] = [
   { id: "n5-n6", source: "n5", target: "n6" },
 ];
 
-export default function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes); // todo: understand this and delete below
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+let id = 0;
+const getId = () => `dndnode_${id++}`;
 
-  // const onNodesChange = useCallback((changes: NodeChange[]) => {
-  //   setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
-  // }, []);
-  // const onEdgesChange = useCallback(
-  //   (changes: EdgeChange[]) =>
-  //     setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-  //   []
-  // );
+function DnDFlow() {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { screenToFlowPosition } = useReactFlow();
+  const [type] = useDnD();
+
   const onConnect = useCallback(
     (params: Connection) =>
       setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     [],
   );
 
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+
+      // check if the dropped element is valid
+      if (!type) {
+        return;
+      }
+
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const newNode: Node = {
+        id: getId(),
+        type,
+        position,
+        data: type === "data" ? { val: 0 } : {},
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [screenToFlowPosition, type, setNodes],
+  );
+
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-      >
-        <Background />
-        <Controls />
-      </ReactFlow>
+    <div className="dndflow">
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          fitView
+        >
+          <Background />
+          <Controls />
+        </ReactFlow>
+      </div>
+      <Sidebar />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ReactFlowProvider>
+      <DnDProvider>
+        <DnDFlow />
+      </DnDProvider>
+    </ReactFlowProvider>
   );
 }

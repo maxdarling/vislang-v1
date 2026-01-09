@@ -63,7 +63,6 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
           alignItems: "center",
           justifyContent: "center",
           padding: 0,
-          cursor: "pointer",
         }}
       >
         {isEditing ? (
