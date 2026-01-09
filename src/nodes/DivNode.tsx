@@ -15,3 +15,5 @@ export function DivNode(props: NodeProps<Node<DivNodeData, "div">>) {
     />
   );
 }
+
+DivNode.type = "div" as const;

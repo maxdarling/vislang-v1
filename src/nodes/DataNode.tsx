@@ -65,7 +65,7 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
           />
         ) : (
           <div onClick={handleClick} className="nodrag">
-            {value || "0"}
+            {value || DataNode.defaultVal}
           </div>
         )}
       </div>
@@ -73,3 +73,6 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
     </>
   );
 }
+
+DataNode.type = "data" as const;
+DataNode.defaultVal = "1" as const;

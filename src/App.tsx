@@ -22,49 +22,58 @@ import { DisplayNode } from "./nodes/DisplayNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
 
-const nodeTypes = {
-  add: AddNode,
-  sub: SubNode,
-  mul: MulNode,
-  div: DivNode,
-  data: DataNode,
-  display: DisplayNode,
-};
+// master node type list
+export const nodeTypesByCategory = {
+  data: [DataNode],
+  arith: [AddNode, SubNode, MulNode, DivNode],
+  other: [DisplayNode],
+} as const;
+
+export const nodeTypes = [
+  ...nodeTypesByCategory.data,
+  ...nodeTypesByCategory.arith,
+  ...nodeTypesByCategory.other,
+] as const;
+
+// magic format for Flow. ignore. defined outside component to prevent re-render.
+const reactFlowNodeTypes = Object.fromEntries(
+  nodeTypes.map((NodeComponent) => [NodeComponent.type, NodeComponent]),
+) as Record<(typeof nodeTypes)[number]["type"], (typeof nodeTypes)[number]>;
 
 const initialNodes: Node[] = [
   {
     id: "n1",
-    type: "data",
+    type: DataNode.type,
     position: { x: 0, y: 0 },
     data: { val: 1 },
   },
   {
     id: "n2",
-    type: "data",
+    type: DataNode.type,
     position: { x: 0, y: 100 },
     data: { val: 2 },
   },
   {
     id: "n3",
-    type: "mul",
+    type: MulNode.type,
     position: { x: 100, y: 50 },
     data: {},
   },
   {
     id: "n4",
-    type: "data",
+    type: DataNode.type,
     position: { x: 100, y: 150 },
     data: { val: 3 },
   },
   {
     id: "n5",
-    type: "add",
+    type: AddNode.type,
     position: { x: 200, y: 100 },
     data: {},
   },
   {
     id: "n6",
-    type: "display",
+    type: DisplayNode.type,
     position: { x: 300, y: 100 },
     data: {},
   },
@@ -117,7 +126,7 @@ function DnDFlow() {
         id: getId(),
         type,
         position,
-        data: type === "data" ? { val: 0 } : {},
+        data: type === DataNode.type ? { val: 0 } : {},
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -131,7 +140,7 @@ function DnDFlow() {
         <ReactFlow
           nodes={nodes}
           edges={edges}
-          nodeTypes={nodeTypes}
+          nodeTypes={reactFlowNodeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}

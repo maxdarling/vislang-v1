@@ -15,3 +15,5 @@ export function MulNode(props: NodeProps<Node<MulNodeData, "mul">>) {
     />
   );
 }
+
+MulNode.type = "mul" as const;

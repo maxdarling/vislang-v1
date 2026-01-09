@@ -15,3 +15,5 @@ export function AddNode(props: NodeProps<Node<AddNodeData, "add">>) {
     />
   );
 }
+
+AddNode.type = "add" as const;

@@ -1,5 +1,13 @@
+import { nodeTypes } from "../App";
+import { AddNode } from "../nodes/AddNode";
+import { SubNode } from "../nodes/SubNode";
+import { MulNode } from "../nodes/MulNode";
+import { DivNode } from "../nodes/DivNode";
+import { DataNode } from "../nodes/DataNode";
+import { DisplayNode } from "../nodes/DisplayNode";
+
 type NodeIconProps = {
-  type: "data" | "add" | "sub" | "mul" | "div" | "display";
+  type: (typeof nodeTypes)[number]["type"];
   size?: number;
 };
 
@@ -8,7 +16,7 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
   const borderRadius = 4; // For rounded rectangles
 
   switch (type) {
-    case "data":
+    case DataNode.type:
       // Circle - matches the circular data node
       return (
         <svg
@@ -27,12 +35,12 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontSize="16"
             fontWeight="bold"
           >
-            data
+            {DataNode.defaultVal}
           </text>
         </svg>
       );
 
-    case "add":
+    case AddNode.type:
       // Rounded square with plus sign
       return (
         <svg
@@ -51,7 +59,7 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
         </svg>
       );
 
-    case "sub":
+    case SubNode.type:
       // Rounded square with minus sign
       return (
         <svg
@@ -70,7 +78,7 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
         </svg>
       );
 
-    case "mul":
+    case MulNode.type:
       // Rounded square with X
       return (
         <svg
@@ -89,7 +97,7 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
         </svg>
       );
 
-    case "div":
+    case DivNode.type:
       // Rounded square with division symbol
       return (
         <svg
@@ -110,7 +118,7 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
         </svg>
       );
 
-    case "display":
+    case DisplayNode.type:
       // Rounded square with DISP text
       return (
         <svg

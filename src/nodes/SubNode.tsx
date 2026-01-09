@@ -15,3 +15,5 @@ export function SubNode(props: NodeProps<Node<SubNodeData, "sub">>) {
     />
   );
 }
+
+SubNode.type = "sub" as const;

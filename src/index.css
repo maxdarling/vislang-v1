@@ -45,6 +45,19 @@ body {
   margin-bottom: 10px;
 }
 
+.dndflow aside .node-category {
+  margin-bottom: 20px;
+}
+
+.dndflow aside .category-header {
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
 .dndflow .dndnode {
   width: 48px;
   height: 48px;

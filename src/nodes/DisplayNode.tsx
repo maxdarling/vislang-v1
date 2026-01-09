@@ -35,3 +35,5 @@ export function DisplayNode(_props: NodeProps<DisplayNode>) {
     </>
   );
 }
+
+DisplayNode.type = "display" as const;
