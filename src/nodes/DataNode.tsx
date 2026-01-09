@@ -52,19 +52,7 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
 
   return (
     <>
-      <div
-        className="react-flow__node-default"
-        style={{
-          backgroundColor: "red",
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 0,
-        }}
-      >
+      <div className="react-flow__node-default node-data">
         {isEditing ? (
           <input
             ref={inputRef}
@@ -74,33 +62,9 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             className="nodrag"
-            style={{
-              width: "35px",
-              height: "20px",
-              border: "none",
-              borderRadius: "2px",
-              padding: "2px 4px",
-              textAlign: "center",
-              fontSize: "12px",
-              outline: "none",
-            }}
           />
         ) : (
-          <div
-            onClick={handleClick}
-            className="nodrag"
-            style={{
-              width: "35px",
-              height: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              cursor: "text",
-              //   overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
+          <div onClick={handleClick} className="nodrag">
             {value || "0"}
           </div>
         )}

@@ -12,6 +12,11 @@ body {
 
 .react-flow {
   --xy-theme-selected: #f57dbd;
+
+  /* Node colors - source of truth */
+  --node-color-data: #ff0000;
+  --node-color-func: orange;
+  --node-color-display: lightblue;
 }
 
 .react-flow__handle.connectable {
@@ -53,28 +58,84 @@ body {
   cursor: grab;
 }
 
+/* Sidebar node border colors */
 .dndflow .dndnode.data {
-  border-color: #ff0000;
+  border-color: var(--node-color-data);
 }
 
-.dndflow .dndnode.add {
-  border-color: #0041d0;
-}
-
-.dndflow .dndnode.sub {
-  border-color: #ff0072;
-}
-
-.dndflow .dndnode.mul {
-  border-color: #1a192b;
-}
-
+.dndflow .dndnode.add,
+.dndflow .dndnode.sub,
+.dndflow .dndnode.mul,
 .dndflow .dndnode.div {
-  border-color: #722f37;
+  border-color: var(--node-color-func);
 }
 
 .dndflow .dndnode.display {
-  border-color: #00d084;
+  border-color: var(--node-color-display);
+}
+
+/* Canvas node styles - source of truth for all node properties */
+.react-flow__node-default.node-data {
+  background-color: var(--node-color-data);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Function nodes (add, sub, mul, div) - shared styles and color */
+.react-flow__node-default.node-add,
+.react-flow__node-default.node-sub,
+.react-flow__node-default.node-mul,
+.react-flow__node-default.node-div {
+  background-color: var(--node-color-func);
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.react-flow__node-default.node-display {
+  background-color: var(--node-color-display);
+  width: 80px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* DataNode inner content (input and display) - shared styles */
+.react-flow__node-default.node-data input,
+.react-flow__node-default.node-data .nodrag {
+  width: 35px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* DataNode input specific styles */
+.react-flow__node-default.node-data input {
+  border: none;
+  border-radius: 2px;
+  padding: 2px 4px;
+  text-align: center;
+  outline: none;
+}
+
+/* DataNode display value specific styles */
+.react-flow__node-default.node-data .nodrag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  text-overflow: ellipsis;
 }
 
 .dndflow .reactflow-wrapper {

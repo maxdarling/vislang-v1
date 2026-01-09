@@ -11,7 +11,7 @@ export function DivNode(props: NodeProps<Node<DivNodeData, "div">>) {
       label="÷"
       reducer={(acc, curr) => (curr !== 0 ? acc / curr : acc)}
       initialValue={1}
-      backgroundColor="lightcoral"
+      nodeType="div"
     />
   );
 }

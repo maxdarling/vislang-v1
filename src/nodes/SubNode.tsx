@@ -11,7 +11,7 @@ export function SubNode(props: NodeProps<Node<SubNodeData, "sub">>) {
       label="-"
       reducer={(acc, curr) => acc - curr}
       initialValue={0}
-      backgroundColor="lightblue"
+      nodeType="sub"
     />
   );
 }

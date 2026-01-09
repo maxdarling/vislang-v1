@@ -11,7 +11,7 @@ export function MulNode(props: NodeProps<Node<MulNodeData, "mul">>) {
       label="×"
       reducer={(acc, curr) => acc * curr}
       initialValue={1}
-      backgroundColor="lightgreen"
+      nodeType="mul"
     />
   );
 }

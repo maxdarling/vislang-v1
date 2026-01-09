@@ -11,7 +11,7 @@ export function AddNode(props: NodeProps<Node<AddNodeData, "add">>) {
       label="+"
       reducer={(acc, curr) => acc + curr}
       initialValue={0}
-      backgroundColor="orange"
+      nodeType="add"
     />
   );
 }

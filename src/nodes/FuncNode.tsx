@@ -15,7 +15,7 @@ type FuncNodeProps = {
   label: string;
   reducer: (acc: number, curr: number) => number;
   initialValue: number;
-  backgroundColor?: string;
+  nodeType: string;
 };
 
 export function FuncNode({
@@ -23,7 +23,7 @@ export function FuncNode({
   label,
   reducer,
   initialValue,
-  backgroundColor = "orange",
+  nodeType,
 }: FuncNodeProps) {
   const { updateNodeData } = useReactFlow();
 
@@ -57,19 +57,7 @@ export function FuncNode({
         onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={true}
       />
-      <div
-        className="react-flow__node-default"
-        style={{
-          backgroundColor,
-          width: "50px",
-          height: "50px",
-          borderRadius: "4px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 0,
-        }}
-      >
+      <div className={`react-flow__node-default node-${nodeType}`}>
         {label}
         <br />
         {`(${value})`}

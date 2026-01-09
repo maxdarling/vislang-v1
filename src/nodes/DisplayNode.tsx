@@ -27,19 +27,7 @@ export function DisplayNode(_props: NodeProps<DisplayNode>) {
         position={Position.Left}
         connectionCount={maxConnections}
       />
-      <div
-        className="react-flow__node-default"
-        style={{
-          backgroundColor: "lightblue",
-          width: "80px",
-          height: "50px",
-          borderRadius: "4px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 0,
-        }}
-      >
+      <div className="react-flow__node-default node-display">
         DISP
         <br />
         {val ?? "—"}
