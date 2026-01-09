@@ -10,10 +10,9 @@ body {
   height: 100vh;
 }
 
-.react-flow {
+/* define at :root level so they're in dnd wrapper and reactflow canvas */
+:root {
   --xy-theme-selected: #f57dbd;
-
-  /* Node colors - source of truth */
   --node-color-data: #ff0000;
   --node-color-func: orange;
   --node-color-display: lightblue;
@@ -47,31 +46,37 @@ body {
 }
 
 .dndflow .dndnode {
-  height: 20px;
+  width: 48px;
+  height: 48px;
   padding: 4px;
-  border: 1px solid #1a192b;
-  border-radius: 2px;
+  border: 2px solid #1a192b;
+  border-radius: 4px;
   margin-bottom: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: grab;
+  background: white;
 }
 
-/* Sidebar node border colors */
-.dndflow .dndnode.data {
-  border-color: var(--node-color-data);
+/* NodeIcon component styles - uses CSS variables for colors */
+.node-icon {
+  display: block;
 }
 
-.dndflow .dndnode.add,
-.dndflow .dndnode.sub,
-.dndflow .dndnode.mul,
-.dndflow .dndnode.div {
-  border-color: var(--node-color-func);
+.node-icon-data circle {
+  fill: var(--node-color-data);
 }
 
-.dndflow .dndnode.display {
-  border-color: var(--node-color-display);
+.node-icon-add rect,
+.node-icon-sub rect,
+.node-icon-mul rect,
+.node-icon-div rect {
+  fill: var(--node-color-func);
+}
+
+.node-icon-display rect {
+  fill: var(--node-color-display);
 }
 
 /* Canvas node styles - source of truth for all node properties */
@@ -103,7 +108,7 @@ body {
 
 .react-flow__node-default.node-display {
   background-color: var(--node-color-display);
-  width: 80px;
+  width: 50px;
   height: 50px;
   border-radius: 4px;
   display: flex;
