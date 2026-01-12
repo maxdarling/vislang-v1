@@ -7,24 +7,24 @@ import {
 } from "@xyflow/react";
 import { useEffect, useMemo } from "react";
 
-type FuncNodeData = { val: number };
+type ArithNodeData = { val: number };
 
-type FuncNodeProps = {
+type ArithNodeProps = {
   id: string;
-  data?: FuncNodeData;
+  data?: ArithNodeData;
   label: string;
   reducer: (acc: number, curr: number) => number;
   initialValue: number;
   nodeType: string;
 };
 
-export function FuncNode({
+export function ArithNode({
   id,
   label,
   reducer,
   initialValue,
   nodeType,
-}: FuncNodeProps) {
+}: ArithNodeProps) {
   const { updateNodeData } = useReactFlow();
 
   const inConnections = useNodeConnections({
@@ -51,12 +51,7 @@ export function FuncNode({
 
   return (
     <>
-      <Handle
-        type="target"
-        position={Position.Left}
-        onConnect={(params) => console.log("handle onConnect", params)}
-        isConnectable={true}
-      />
+      <Handle type="target" position={Position.Left} isConnectable={true} />
       <div className={`react-flow__node-default node-${nodeType}`}>
         {label}
         <br />

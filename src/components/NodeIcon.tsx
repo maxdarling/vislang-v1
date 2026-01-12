@@ -1,8 +1,8 @@
 import { nodeTypes } from "../App";
-import { AddNode } from "../nodes/AddNode";
-import { SubNode } from "../nodes/SubNode";
-import { MulNode } from "../nodes/MulNode";
-import { DivNode } from "../nodes/DivNode";
+import { AddNode } from "../nodes/arith/AddNode";
+import { SubNode } from "../nodes/arith/SubNode";
+import { MulNode } from "../nodes/arith/MulNode";
+import { DivNode } from "../nodes/arith/DivNode";
 import { DataNode } from "../nodes/DataNode";
 import { DisplayNode } from "../nodes/DisplayNode";
 

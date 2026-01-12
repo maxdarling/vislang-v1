@@ -1,12 +1,12 @@
 import { type NodeProps, type Node } from "@xyflow/react";
-import { FuncNode } from "./FuncNode";
+import { ArithNode } from "./ArithNode";
 
 type MulNodeData = { val: number };
 type MulNode = Node<MulNodeData, "mul">;
 
 export function MulNode(props: NodeProps<Node<MulNodeData, "mul">>) {
   return (
-    <FuncNode
+    <ArithNode
       {...props}
       label="×"
       reducer={(acc, curr) => acc * curr}

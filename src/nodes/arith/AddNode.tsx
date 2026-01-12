@@ -1,12 +1,12 @@
 import { type NodeProps, type Node } from "@xyflow/react";
-import { FuncNode } from "./FuncNode";
+import { ArithNode } from "./ArithNode";
 
 type AddNodeData = { val: number };
 type AddNode = Node<AddNodeData, "add">;
 
 export function AddNode(props: NodeProps<Node<AddNodeData, "add">>) {
   return (
-    <FuncNode
+    <ArithNode
       {...props}
       label="+"
       reducer={(acc, curr) => acc + curr}

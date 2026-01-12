@@ -13,10 +13,10 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { AddNode } from "./nodes/AddNode";
-import { SubNode } from "./nodes/SubNode";
-import { MulNode } from "./nodes/MulNode";
-import { DivNode } from "./nodes/DivNode";
+import { AddNode } from "./nodes/arith/AddNode";
+import { SubNode } from "./nodes/arith/SubNode";
+import { MulNode } from "./nodes/arith/MulNode";
+import { DivNode } from "./nodes/arith/DivNode";
 import { DataNode } from "./nodes/DataNode";
 import { DisplayNode } from "./nodes/DisplayNode";
 import Sidebar from "./Sidebar";
@@ -112,7 +112,6 @@ function DnDFlow() {
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      // check if the dropped element is valid
       if (!type) {
         return;
       }
@@ -126,7 +125,7 @@ function DnDFlow() {
         id: getId(),
         type,
         position,
-        data: type === DataNode.type ? { val: 0 } : {},
+        data: {}, // nodes should init themselves.
       };
 
       setNodes((nds) => nds.concat(newNode));

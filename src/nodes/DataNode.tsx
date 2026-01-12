@@ -12,9 +12,17 @@ type DataNode = Node<DataNodeData, "data">;
 
 export function DataNode({ id, data }: NodeProps<DataNode>) {
   // note from docs: you don't want to use data object in UI state directly
+  // e.g. in this case where the data node has an input box.
+
   // real state
   const { updateNodeData } = useReactFlow();
-  const [value, setValue] = useState<number>(data.val);
+  const [value, setValue] = useState<number>(data?.val ?? DataNode.defaultVal);
+
+  useEffect(() => {
+    if (data?.val === undefined) {
+      updateNodeData(id, { val: value });
+    }
+  }, []);
 
   // UI state
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -22,7 +30,7 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
 
   const onChange = useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const numValue = parseInt(evt.target.value) || 0;
+      const numValue = parseInt(evt.target.value) || DataNode.defaultVal;
       setValue(numValue);
       updateNodeData(id, { val: numValue });
     },
@@ -65,7 +73,7 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
           />
         ) : (
           <div onClick={handleClick} className="nodrag">
-            {value || DataNode.defaultVal}
+            {value ?? DataNode.defaultVal}
           </div>
         )}
       </div>
@@ -75,4 +83,4 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
 }
 
 DataNode.type = "data" as const;
-DataNode.defaultVal = "1" as const;
+DataNode.defaultVal = 1 as const;

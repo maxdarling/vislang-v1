@@ -1,20 +1,10 @@
 # todo
-- functions?
+- functions!
 
-# cleanup
-- unify initial nodes and sidebar-created nodes (diff id schemes)
-- new node creation is a little loose, e.g. pass 0 to data nodes. default constructor (0 val) should be in node file.
-
-# sidebar
-- sidebar elements should be icons, not text. while dragging, too. (jointjs example: https://changelog.jointjs.com/rappid/examples/kitchensink/)
-- 
-
-# later
+# stretch
 - can i get nodes to run arbitrary code?
-- cleanup sidebar
 - layouting with a library like elkjs. docs: https://reactflow.dev/examples/layout/elkjs
 - peruse the examples! https://reactflow.dev/examples. e.g. animating edges.
-
 
 # bugs list
 12/8/25
