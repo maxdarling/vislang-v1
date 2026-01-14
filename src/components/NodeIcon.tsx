@@ -5,6 +5,7 @@ import { MulNode } from "../nodes/arith/MulNode";
 import { DivNode } from "../nodes/arith/DivNode";
 import { DataNode } from "../nodes/DataNode";
 import { DisplayNode } from "../nodes/DisplayNode";
+import { FunctionNode } from "../nodes/FunctionNode";
 
 type NodeIconProps = {
   type: (typeof nodeTypes)[number]["type"];
@@ -138,6 +139,40 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontWeight="bold"
           >
             DISP
+          </text>
+        </svg>
+      );
+
+    case FunctionNode.type:
+      // Rounded square with function symbol (f)
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect
+            x="0"
+            y="0"
+            width="50"
+            height="50"
+            rx={borderRadius}
+            stroke="#1a192b"
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            fill="transparent"
+          />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="#1a192b"
+            fontSize="20"
+            fontWeight="bold"
+          >
+            f
           </text>
         </svg>
       );

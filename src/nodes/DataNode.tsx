@@ -18,6 +18,7 @@ export function DataNode({ id, data }: NodeProps<DataNode>) {
   const { updateNodeData } = useReactFlow();
   const [value, setValue] = useState<number>(data?.val ?? DataNode.defaultVal);
 
+  // node init
   useEffect(() => {
     if (data?.val === undefined) {
       updateNodeData(id, { val: value });

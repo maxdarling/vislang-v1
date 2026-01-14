@@ -19,6 +19,7 @@ import { MulNode } from "./nodes/arith/MulNode";
 import { DivNode } from "./nodes/arith/DivNode";
 import { DataNode } from "./nodes/DataNode";
 import { DisplayNode } from "./nodes/DisplayNode";
+import { FunctionNode } from "./nodes/FunctionNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
 
@@ -26,12 +27,15 @@ import { useDnD, DnDProvider } from "./DnDContext";
 export const nodeTypesByCategory = {
   data: [DataNode],
   arith: [AddNode, SubNode, MulNode, DivNode],
+  function: [FunctionNode],
   other: [DisplayNode],
 } as const;
 
 export const nodeTypes = [
+  // todo: better name
   ...nodeTypesByCategory.data,
   ...nodeTypesByCategory.arith,
+  ...nodeTypesByCategory.function,
   ...nodeTypesByCategory.other,
 ] as const;
 
@@ -41,6 +45,14 @@ const reactFlowNodeTypes = Object.fromEntries(
 ) as Record<(typeof nodeTypes)[number]["type"], (typeof nodeTypes)[number]>;
 
 const initialNodes: Node[] = [
+  {
+    id: "n0",
+    type: FunctionNode.type,
+    position: { x: 200, y: -100 },
+    data: {},
+    width: 200,
+    height: 150,
+  },
   {
     id: "n1",
     type: DataNode.type,
@@ -90,6 +102,7 @@ const initialEdges: Edge[] = [
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
+// "drag and drop" flow: a wrapper that includes a drag-and-drop sidebar and a flow canvas.
 function DnDFlow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
