@@ -25,34 +25,31 @@
   - multiple callers (sol: each node is a new func instance)
   - modular UI: create tabs system (separate Flow?) and/or collapsible function defs.
 
-### todo
-- [ ] basic function node. resizeable transparent rect with name.
-  - make it stay behind child nodes
-    - seems like must use parent relationship for this. awk, because there's this other constraint that child nodes must come after parent in array.
-  - make it resizeable
+# todo
+Function calls:
+- basic function node. resizeable transparent rect with name.
   - add a name at top
-- [ ] add input/output nodes
-- [ ] call nodes (black boxes with names)
-- [ ] impl simple call scheme
+- add input/output nodes
+- call nodes (black boxes with names)
+- impl simple call scheme
 
-later:
-- [ ] implement pro docs examples:
-  - [ ] (selection grouping)[https://reactflow.dev/examples/grouping/selection-grouping]
-  - [ ] (parent child relation)[https://reactflow.dev/examples/grouping/parent-child-relation]
-- misc docs to consider
-  - (state management options when it gets unwieldy)[https://reactflow.dev/learn/advanced-use/state-management]
+Next:
+- type system?
 
-# react flow docs list
-- intersections: https://reactflow.dev/examples/nodes/intersections
-- subflows (parent relationship and bounding): https://reactflow.dev/learn/layouting/sub-flows
-
-# stretch
+Stretch:
 - can i get nodes to run arbitrary code?
 - layouting with a library like elkjs. docs: https://reactflow.dev/examples/layout/elkjs
 - peruse the examples! https://reactflow.dev/examples. e.g. animating edges.
 
+# react flow docs list
+- intersections: https://reactflow.dev/examples/nodes/intersections
+- subflows (parent relationship and bounding): https://reactflow.dev/learn/layouting/sub-flows
+- low prio impl:
+  - (state management options when it gets unwieldy)[https://reactflow.dev/learn/advanced-use/state-management]
+  - (selection grouping)[https://reactflow.dev/examples/grouping/selection-grouping]
+  - (parent child relation)[https://reactflow.dev/examples/grouping/parent-child-relation]
+
 # bugs list
-12/8/25
-- deleting a node/edge to a node with inputs causes crash. cause: violates react's "rule of hooks"? specifically calling a different number of hooks? fix is to use getNode (a method) instead of useNodeData (hook) when i map over connections.
-12/5/25
-- typo on mvp arithmetic example prevented updates from happening.
+- (1/26/26) setting reactive values inside a useEffect. in FunctionNode, when computing 'intersectionCount'. but it doesn't need to be a reactive value - the only reason i was using useEffect in the first place I think was for the render trigger on allNodes. solution: you can express that dependency relationships like that (i.e. "derive X from Y, which can change") with useMemo. this is basic newby react stuff, of course, but it's cool to encounter and understand now. note: configuring eslint with the 'react-hooks' plugin is what caught this - huge!
+- (12/8/25) deleting a node/edge to a node with inputs causes crash. cause: violates react's "rule of hooks"? specifically calling a different number of hooks? fix is to use getNode (a method) instead of useNodeData (hook) when i map over connections.
+- (12/5/25) typo on mvp arithmetic example prevented updates from happening.

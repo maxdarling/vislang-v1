@@ -2,9 +2,9 @@ import { type NodeProps, type Node } from "@xyflow/react";
 import { ArithNode } from "./ArithNode";
 
 type SubNodeData = { val: number };
-type SubNode = Node<SubNodeData, "sub">;
+type SubNodeType = Node<SubNodeData, "sub">;
 
-export function SubNode(props: NodeProps<Node<SubNodeData, "sub">>) {
+export function SubNode(props: NodeProps<SubNodeType>) {
   return (
     <ArithNode
       {...props}

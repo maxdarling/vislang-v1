@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   type NodeProps,
   type Node,
@@ -6,24 +5,24 @@ import {
   useNodes,
   NodeResizer,
 } from "@xyflow/react";
+import { useMemo } from "react";
 
-type FunctionNodeData = {};
-type FunctionNode = Node<FunctionNodeData, "function">;
+type FunctionNodeData = Record<string, never>;
+type FunctionNodeType = Node<FunctionNodeData, "function">;
 
 // 'useNodes' performance note:
 // - useNodes will cause rerender on any node change, incl select or drag. this is suboptimal as intersection only
 // depends on 1. node create/delete (e.g. inside the boundary) and 2. dragging nodes.
-// - separate but useful optimization: once we multiplex flows, use 'useStore' to select only the relevant subset
+// - separate but useful optimization: once we multiplex flows/views, use 'useStore' to select only the relevant subset
 // (i.e. the current "workspace", etc.)
-export function FunctionNode({ id, selected }: NodeProps<FunctionNode>) {
+export function FunctionNode({ id, selected }: NodeProps<FunctionNodeType>) {
   const { getIntersectingNodes } = useReactFlow();
   const allNodes = useNodes();
 
-  const intersectionCount = getIntersectingNodes(
-    { id: id },
-    true,
-    allNodes,
-  ).length;
+  const intersectionCount = useMemo(() => {
+    return getIntersectingNodes({ id: id }, true, allNodes).length;
+    // note: isMemo has ~no benefit here since allNodes will have been changed on ~every render.
+  }, [allNodes, getIntersectingNodes, id]);
 
   return (
     <>

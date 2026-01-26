@@ -2,9 +2,9 @@ import { type NodeProps, type Node } from "@xyflow/react";
 import { ArithNode } from "./ArithNode";
 
 type DivNodeData = { val: number };
-type DivNode = Node<DivNodeData, "div">;
+type DivNodeType = Node<DivNodeData, "div">;
 
-export function DivNode(props: NodeProps<Node<DivNodeData, "div">>) {
+export function DivNode(props: NodeProps<DivNodeType>) {
   return (
     <ArithNode
       {...props}

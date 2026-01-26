@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -113,7 +113,7 @@ function DnDFlow() {
   const onConnect = useCallback(
     (params: Connection) =>
       setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    [],
+    [setEdges],
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {

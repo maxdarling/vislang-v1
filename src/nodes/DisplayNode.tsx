@@ -1,16 +1,7 @@
-import {
-  Position,
-  type NodeProps,
-  type Node,
-  useNodeConnections,
-  useNodesData,
-} from "@xyflow/react";
+import { Position, useNodeConnections, useNodesData } from "@xyflow/react";
 import CustomHandle from "../handles/CustomHandle";
 
-type DisplayNodeData = { val?: number };
-type DisplayNode = Node<DisplayNodeData, "display">;
-
-export function DisplayNode(_props: NodeProps<DisplayNode>) {
+export function DisplayNode() {
   const inConnections = useNodeConnections({
     handleType: "target",
   });

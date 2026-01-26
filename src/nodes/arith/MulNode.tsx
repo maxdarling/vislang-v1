@@ -2,9 +2,9 @@ import { type NodeProps, type Node } from "@xyflow/react";
 import { ArithNode } from "./ArithNode";
 
 type MulNodeData = { val: number };
-type MulNode = Node<MulNodeData, "mul">;
+type MulNodeType = Node<MulNodeData, "mul">;
 
-export function MulNode(props: NodeProps<Node<MulNodeData, "mul">>) {
+export function MulNode(props: NodeProps<MulNodeType>) {
   return (
     <ArithNode
       {...props}

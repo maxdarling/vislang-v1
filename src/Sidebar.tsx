@@ -1,3 +1,4 @@
+import React from "react";
 import { useDnD } from "./DnDContext";
 import { NodeIcon } from "./components/NodeIcon";
 import { nodeTypesByCategory } from "./App";

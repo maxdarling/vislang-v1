@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Handle,
   Position,
@@ -8,22 +8,19 @@ import {
 } from "@xyflow/react";
 
 type DataNodeData = { val: number };
-type DataNode = Node<DataNodeData, "data">;
+type DataNodeType = Node<DataNodeData, "data">;
 
-export function DataNode({ id, data }: NodeProps<DataNode>) {
-  // note from docs: you don't want to use data object in UI state directly
-  // e.g. in this case where the data node has an input box.
+export function DataNode({ id, data }: NodeProps<DataNodeType>) {
+  // note: we separate internal and UI state as per docs:
+  // "When dealing with input fields you don’t want to use a nodes data object as UI state directly."
+  // (from https://reactflow.dev/learn/advanced-use/computing-flows)
 
-  // real state
+  // internal state
   const { updateNodeData } = useReactFlow();
   const [value, setValue] = useState<number>(data?.val ?? DataNode.defaultVal);
 
   // node init
-  useEffect(() => {
-    if (data?.val === undefined) {
-      updateNodeData(id, { val: value });
-    }
-  }, []);
+  useState(() => updateNodeData(id, { val: value }));
 
   // UI state
   const [isEditing, setIsEditing] = useState<boolean>(false);
