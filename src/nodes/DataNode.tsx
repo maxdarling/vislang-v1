@@ -19,8 +19,10 @@ export function DataNode({ id, data }: NodeProps<DataNodeType>) {
   const { updateNodeData } = useReactFlow();
   const [value, setValue] = useState<number>(data?.val ?? DataNode.defaultVal);
 
-  // node init
-  useState(() => updateNodeData(id, { val: value }));
+  // sync initial value to node data on mount (e.g. when dropped from sidebar)
+  useEffect(() => {
+    updateNodeData(id, { val: value });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // UI state
   const [isEditing, setIsEditing] = useState<boolean>(false);
