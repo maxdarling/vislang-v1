@@ -28,8 +28,14 @@
 # todo
 Function calls:
 - basic function node. resizeable transparent rect with name.
-  - add a name at top
 - add input/output nodes
+  - mvp: one target handle on left, one source handle on right
+  - future: inc/dec buttons that dynamically change # of input handles
+- implement a global "namespace"
+  - map of all funcname -> func
+  - func nodes are responsible for updating their map entry on name change
+  - assign unique names to funcs at init time
+    - i guess just use uuid to start
 - call nodes (black boxes with names)
 - impl simple call scheme
 
