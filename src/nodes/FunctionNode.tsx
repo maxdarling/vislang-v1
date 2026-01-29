@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
-  Handle,
-  Position,
   type NodeProps,
   type Node,
   useReactFlow,
@@ -9,6 +7,7 @@ import {
   NodeResizer,
 } from "@xyflow/react";
 import { EditableValue } from "../components/EditableValue";
+import { ParamNode } from "./ParamNode";
 import { ReturnNode } from "./ReturnNode";
 import { getCssVar } from "../utils";
 
@@ -21,12 +20,14 @@ const DEFAULT_HEIGHT = getCssVar("--function-node-default-height", 150);
 const MIN_WIDTH = getCssVar("--function-node-min-width", 150);
 const MIN_HEIGHT = getCssVar("--function-node-min-height", 100);
 const RETURN_NODE_SIZE = getCssVar("--return-node-size", 50);
+const PARAM_NODE_SIZE = getCssVar("--param-node-size", 50);
 
 type FunctionNodeData = { name?: string; paramCount?: number };
 type FunctionNodeType = Node<FunctionNodeData, "function">;
 
-function inputHandleId(index: number) {
-  return `input-${index}`;
+// Helper to generate param node IDs for a given function node
+export function getParamNodeId(functionNodeId: string, index: number) {
+  return `${functionNodeId}-param-${index}`;
 }
 
 // Helper to generate the return node ID for a given function node
@@ -35,6 +36,17 @@ export function getReturnNodeId(functionNodeId: string) {
 }
 
 const DEFAULT_NAME = "function";
+
+// Helper to calculate Y position for a param node at a given index
+function getParamNodeY(
+  index: number,
+  paramCount: number,
+  containerHeight: number,
+) {
+  // Distribute evenly, similar to how handles were positioned
+  const spacing = containerHeight / (paramCount + 1);
+  return spacing * (index + 1) - PARAM_NODE_SIZE / 2;
+}
 
 // 'useNodes' performance note:
 // - useNodes will cause rerender on any node change, incl select or drag. this is suboptimal as intersection only
@@ -49,19 +61,24 @@ export function FunctionNode({
   const { getIntersectingNodes, updateNodeData, setNodes, getNode } =
     useReactFlow();
   const allNodes = useNodes();
-  const hasSpawnedReturnNode = useRef(false);
+  const hasSpawnedChildNodes = useRef(false);
 
-  // Spawn child ReturnNode on mount
+  const paramCount = Math.max(
+    MIN_PARAMS,
+    data?.paramCount ?? DEFAULT_PARAM_COUNT,
+  );
+
+  // Spawn child ReturnNode and initial ParamNodes on mount
   useEffect(() => {
-    if (hasSpawnedReturnNode.current) return;
-    hasSpawnedReturnNode.current = true;
+    if (hasSpawnedChildNodes.current) return;
+    hasSpawnedChildNodes.current = true;
 
     const returnNodeId = getReturnNodeId(id);
-    if (getNode(returnNodeId)) return;
+    const nodesToAdd: Node[] = [];
 
-    setNodes((nodes) => [
-      ...nodes,
-      {
+    // Add ReturnNode if not exists
+    if (!getNode(returnNodeId)) {
+      nodesToAdd.push({
         id: returnNodeId,
         type: ReturnNode.type,
         position: {
@@ -71,15 +88,32 @@ export function FunctionNode({
         data: {},
         parentId: id,
         extent: "parent" as const,
-      },
-    ]);
+      });
+    }
+
+    // Add initial ParamNodes
+    for (let i = 0; i < DEFAULT_PARAM_COUNT; i++) {
+      const paramNodeId = getParamNodeId(id, i);
+      if (!getNode(paramNodeId)) {
+        nodesToAdd.push({
+          id: paramNodeId,
+          type: ParamNode.type,
+          position: {
+            x: 0,
+            y: getParamNodeY(i, DEFAULT_PARAM_COUNT, DEFAULT_HEIGHT),
+          },
+          data: { name: `p${i}` },
+          parentId: id,
+          extent: "parent" as const,
+        });
+      }
+    }
+
+    if (nodesToAdd.length > 0) {
+      setNodes((nodes) => [...nodes, ...nodesToAdd]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const paramCount = Math.max(
-    MIN_PARAMS,
-    data?.paramCount ?? DEFAULT_PARAM_COUNT,
-  );
 
   const intersectionCount = useMemo(() => {
     return getIntersectingNodes({ id: id }, true, allNodes).length;
@@ -93,37 +127,46 @@ export function FunctionNode({
     [id, updateNodeData],
   );
 
-  const setParamCount = useCallback(
-    (next: number) => {
-      const clamped = Math.max(MIN_PARAMS, next);
-      updateNodeData(id, { paramCount: clamped });
-    },
-    [id, updateNodeData],
-  );
+  const incrementParams = useCallback(() => {
+    const newIndex = paramCount;
+    const newParamCount = paramCount + 1;
+    const paramNodeId = getParamNodeId(id, newIndex);
 
-  const decrementParams = useCallback(
-    () => setParamCount(paramCount - 1),
-    [paramCount, setParamCount],
-  );
-  const incrementParams = useCallback(
-    () => setParamCount(paramCount + 1),
-    [paramCount, setParamCount],
-  );
+    // Add new ParamNode
+    setNodes((nodes) => [
+      ...nodes,
+      {
+        id: paramNodeId,
+        type: ParamNode.type,
+        position: {
+          x: 0,
+          y: getParamNodeY(newIndex, newParamCount, DEFAULT_HEIGHT),
+        },
+        data: { name: `p${newIndex}` },
+        parentId: id,
+        extent: "parent" as const,
+      },
+    ]);
+
+    // Update param count in data
+    updateNodeData(id, { paramCount: newParamCount });
+  }, [id, paramCount, setNodes, updateNodeData]);
+
+  const decrementParams = useCallback(() => {
+    if (paramCount <= MIN_PARAMS) return;
+
+    const removeIndex = paramCount - 1;
+    const paramNodeId = getParamNodeId(id, removeIndex);
+
+    // Remove the last ParamNode
+    setNodes((nodes) => nodes.filter((n) => n.id !== paramNodeId));
+
+    // Update param count in data
+    updateNodeData(id, { paramCount: paramCount - 1 });
+  }, [id, paramCount, setNodes, updateNodeData]);
 
   return (
     <>
-      {Array.from({ length: paramCount }, (_, i) => (
-        <Handle
-          key={inputHandleId(i)}
-          id={inputHandleId(i)}
-          type="target"
-          position={Position.Left}
-          isConnectable={true}
-          style={{
-            top: `${((i + 1) / (paramCount + 1)) * 100}%`,
-          }}
-        />
-      ))}
       <NodeResizer
         color="#ff0071"
         isVisible={selected}

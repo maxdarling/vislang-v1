@@ -57,8 +57,7 @@ example NodeResizer flow:
 # todo
 Function calls:
 - add input/output nodes
-  - mvp: one target handle on left, one source handle on right
-  - future: inc/dec buttons that dynamically change # of input handles
+  - inc/dec buttons that dynamically change # of input handles
     - UI: newline under function name label: "params: [-]{paramCount}[+]".
     - assign ids to handles. they can just simply incrementing numbers per node, per input/output (i think? we'll test it)
     - edit: ok, so this is a function *def*, not a call. so the left params should be source nodes that drag rightwards into the box.

@@ -8,7 +8,7 @@ import {
 } from "@xyflow/react";
 import { EditableValue } from "../components/EditableValue";
 
-type ParamNodeData = { name: string };
+type ParamNodeData = { name?: string };
 type ParamNodeType = Node<ParamNodeData, "param">;
 
 export function ParamNode({ id, data }: NodeProps<ParamNodeType>) {

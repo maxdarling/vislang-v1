@@ -50,7 +50,7 @@ const initialNodes: Node[] = [
   {
     id: "n0",
     type: FunctionNode.type,
-    position: { x: 200, y: -100 },
+    position: { x: 200, y: -150 },
     data: {},
   },
   {
@@ -81,12 +81,6 @@ const initialNodes: Node[] = [
     id: "n5",
     type: AddNode.type,
     position: { x: 200, y: 100 },
-    data: {},
-  },
-  {
-    id: "n6",
-    type: DisplayNode.type,
-    position: { x: 300, y: 100 },
     data: {},
   },
 ];
