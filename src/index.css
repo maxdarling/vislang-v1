@@ -145,12 +145,19 @@ body {
   position: relative;
 }
 
-.function-node-name-row {
+.function-node-header {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   bottom: 100%;
   margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.function-node-name-row {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -191,6 +198,51 @@ body {
   font-weight: 500;
   color: #666;
   white-space: nowrap;
+}
+
+.function-node-params-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #666;
+}
+
+.function-node-params-label {
+  white-space: nowrap;
+}
+
+.function-node-params-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #b1b1b7;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a192b;
+}
+
+.function-node-params-btn:hover:not(:disabled) {
+  border-color: var(--xy-theme-selected);
+  background: #fafafa;
+}
+
+.function-node-params-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.function-node-param-count {
+  min-width: 1.5em;
+  text-align: center;
+  font-weight: 600;
+  color: #1a192b;
 }
 
 .react-flow__node-default.node-function {

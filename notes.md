@@ -27,16 +27,26 @@
 
 # todo
 Function calls:
-- basic function node. resizeable transparent rect with name.
 - add input/output nodes
   - mvp: one target handle on left, one source handle on right
   - future: inc/dec buttons that dynamically change # of input handles
+    - UI: newline under function name label: "params: [-]{paramCount}[+]".
+    - assign ids to handles. they can just simply incrementing numbers per node, per input/output (i think? we'll test it)
+    - edit: ok, so this is a function *def*, not a call. so the left params should be source nodes that drag rightwards into the box.
+      - but does that even make sense? should params be handles or nodes?
+      - params dont' have a known value at declaration time, ya know? so I think handles kind make sense.
+      - the only issue then is that at call time, are we passing value through those handles?
+        - i don't think so. the data passing so far has been in e.g. arithNode 'useNodeConnections'. handles just facilitate the creation of edges between nodes. if it were handles, then the react flow semantics would be meaningless: a param handle connected to an internal node would connect said node to the function node's source - not the semantics we want.
+
 - implement a global "namespace"
   - map of all funcname -> func
   - func nodes are responsible for updating their map entry on name change
   - assign unique names to funcs at init time
     - i guess just use uuid to start
-- call nodes (black boxes with names)
+- create call nodes (black boxes with names)
+  - dropdown to select a function name from global namespace
+  - upon changing name that, it morphs to the proper call signature, i.e. named params as INPUTS and return node as output
+    -
 - impl simple call scheme
 
 Next:
