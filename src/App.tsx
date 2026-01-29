@@ -18,7 +18,9 @@ import { SubNode } from "./nodes/arith/SubNode";
 import { MulNode } from "./nodes/arith/MulNode";
 import { DivNode } from "./nodes/arith/DivNode";
 import { DataNode } from "./nodes/DataNode";
+import { ParamNode } from "./nodes/ParamNode";
 import { DisplayNode } from "./nodes/DisplayNode";
+import { ReturnNode } from "./nodes/ReturnNode";
 import { FunctionNode } from "./nodes/FunctionNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
@@ -27,7 +29,7 @@ import { useDnD, DnDProvider } from "./DnDContext";
 export const nodeTypesByCategory = {
   data: [DataNode],
   arith: [AddNode, SubNode, MulNode, DivNode],
-  function: [FunctionNode],
+  function: [FunctionNode, ParamNode, ReturnNode],
   other: [DisplayNode],
 } as const;
 

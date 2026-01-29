@@ -14,8 +14,10 @@ body {
 :root {
   --xy-theme-selected: #f57dbd;
   --node-color-data: #ff0000;
+  --node-color-param: #90ee90;
   --node-color-func: orange;
   --node-color-display: lightblue;
+  --node-color-return: #dda0dd;
 }
 
 .react-flow__handle.connectable {
@@ -81,6 +83,10 @@ body {
   fill: var(--node-color-data);
 }
 
+.node-icon-param rect {
+  fill: var(--node-color-param);
+}
+
 .node-icon-add rect,
 .node-icon-sub rect,
 .node-icon-mul rect,
@@ -90,6 +96,10 @@ body {
 
 .node-icon-display rect {
   fill: var(--node-color-display);
+}
+
+.node-icon-return rect {
+  fill: var(--node-color-return);
 }
 
 .node-icon-function rect {
@@ -107,6 +117,43 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+.react-flow__node-default.node-param {
+  background-color: var(--node-color-param);
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* ParamNode inner content (input and display) - shared styles */
+.react-flow__node-default.node-param input,
+.react-flow__node-default.node-param .nodrag {
+  width: 35px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* ParamNode input specific styles */
+.react-flow__node-default.node-param input {
+  border: none;
+  border-radius: 2px;
+  padding: 2px 4px;
+  text-align: center;
+  outline: none;
+}
+
+/* ParamNode display value specific styles */
+.react-flow__node-default.node-param .nodrag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  text-overflow: ellipsis;
 }
 
 /* arith nodes (add, sub, mul, div) - shared styles and color */
@@ -133,6 +180,19 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+.react-flow__node-default.node-return {
+  background-color: var(--node-color-return);
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Function node: name sits just above the top edge of the box */
