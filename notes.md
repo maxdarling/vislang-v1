@@ -1,3 +1,32 @@
+# react flow concepts
+### nodes are just dom elements
+- nodes are just dom elements.
+- react flow reads ("measures") their width/height from the browser (e.g. by `e.getBoundingClientRect())
+  - react flow controls position, though, via transforms.
+    - todo: understand better
+
+example NodeResizer flow:
+  pointer move
+    ↓
+  math (delta)
+    ↓
+  update node.style in state
+    ↓
+  React render
+    ↓
+  DOM width/height changes
+    ↓
+  browser layout
+    ↓
+  React Flow measures
+    ↓
+  edges + hitboxes update
+
+### node sizing via css styles
+- since flow is measuring, setting node height/width in stylesheet totally fine
+- noob pointer: inline styles win in CSS. this is how resizer can override a node with an initial width/height set in the stylesheet
+
+
 # functions notes
 
 - normal function calls work like:
@@ -83,6 +112,7 @@ Stretch:
   - (parent child relation)[https://reactflow.dev/examples/grouping/parent-child-relation]
 
 # bugs list
+- (1/29/26) new DnD'd function nodes are tiny. reason: initial dimensions not being set (unlike the "initial node" which had width/height set). i assumed the node resizer would set the dimensions for you, but apparently not. what's happening is that the node's root div dims are unset by us so the browser sets it automatically to some small size, and *then* then react flow measures that as the node's size, and then the node resizer acts on that size. See "concepts" section for more clarity.
 - (1/26/26) setting reactive values inside a useEffect. in FunctionNode, when computing 'intersectionCount'. but it doesn't need to be a reactive value - the only reason i was using useEffect in the first place I think was for the render trigger on allNodes. solution: you can express that dependency relationships like that (i.e. "derive X from Y, which can change") with useMemo. this is basic newby react stuff, of course, but it's cool to encounter and understand now. note: configuring eslint with the 'react-hooks' plugin is what caught this - huge!
 - (12/8/25) deleting a node/edge to a node with inputs causes crash. cause: violates react's "rule of hooks"? specifically calling a different number of hooks? fix is to use getNode (a method) instead of useNodeData (hook) when i map over connections.
 - (12/5/25) typo on mvp arithmetic example prevented updates from happening.

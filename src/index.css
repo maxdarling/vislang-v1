@@ -18,6 +18,15 @@ body {
   --node-color-func: orange;
   --node-color-display: lightblue;
   --node-color-return: #dda0dd;
+
+  /* Function node dimensions */
+  --function-node-default-width: 200px;
+  --function-node-default-height: 150px;
+  --function-node-min-width: 150px;
+  --function-node-min-height: 100px;
+
+  /* Return node dimensions */
+  --return-node-size: 50px;
 }
 
 .react-flow__handle.connectable {
@@ -184,8 +193,8 @@ body {
 
 .react-flow__node-default.node-return {
   background-color: var(--node-color-return);
-  width: 50px;
-  height: 50px;
+  width: var(--return-node-size);
+  height: var(--return-node-size);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -303,6 +312,12 @@ body {
   text-align: center;
   font-weight: 600;
   color: #1a192b;
+}
+
+/* React Flow wrapper for function nodes - sets initial dimensions */
+.react-flow__node-function {
+  width: var(--function-node-default-width);
+  height: var(--function-node-default-height);
 }
 
 .react-flow__node-default.node-function {

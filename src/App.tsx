@@ -52,8 +52,6 @@ const initialNodes: Node[] = [
     type: FunctionNode.type,
     position: { x: 200, y: -100 },
     data: {},
-    width: 200,
-    height: 150,
   },
   {
     id: "n1",

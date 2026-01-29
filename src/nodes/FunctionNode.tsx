@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Handle,
   Position,
@@ -9,9 +9,18 @@ import {
   NodeResizer,
 } from "@xyflow/react";
 import { EditableValue } from "../components/EditableValue";
+import { ReturnNode } from "./ReturnNode";
+import { getCssVar } from "../utils";
 
 const MIN_PARAMS = 1; // todo: should be 0
 const DEFAULT_PARAM_COUNT = 1;
+
+// Dimensions from CSS variables (source of truth in index.css :root)
+const DEFAULT_WIDTH = getCssVar("--function-node-default-width", 200);
+const DEFAULT_HEIGHT = getCssVar("--function-node-default-height", 150);
+const MIN_WIDTH = getCssVar("--function-node-min-width", 150);
+const MIN_HEIGHT = getCssVar("--function-node-min-height", 100);
+const RETURN_NODE_SIZE = getCssVar("--return-node-size", 50);
 
 type FunctionNodeData = { name?: string; paramCount?: number };
 type FunctionNodeType = Node<FunctionNodeData, "function">;
@@ -19,23 +28,53 @@ type FunctionNodeType = Node<FunctionNodeData, "function">;
 function inputHandleId(index: number) {
   return `input-${index}`;
 }
-const OUTPUT_HANDLE_ID = "output-0";
+
+// Helper to generate the return node ID for a given function node
+export function getReturnNodeId(functionNodeId: string) {
+  return `${functionNodeId}-return`;
+}
+
+const DEFAULT_NAME = "function";
 
 // 'useNodes' performance note:
 // - useNodes will cause rerender on any node change, incl select or drag. this is suboptimal as intersection only
 // depends on 1. node create/delete (e.g. inside the boundary) and 2. dragging nodes.
 // - separate but useful optimization: once we multiplex flows/views, use 'useStore' to select only the relevant subset
 // (i.e. the current "workspace", etc.)
-
-const DEFAULT_NAME = "function";
-
 export function FunctionNode({
   id,
   data,
   selected,
 }: NodeProps<FunctionNodeType>) {
-  const { getIntersectingNodes, updateNodeData } = useReactFlow();
+  const { getIntersectingNodes, updateNodeData, setNodes, getNode } =
+    useReactFlow();
   const allNodes = useNodes();
+  const hasSpawnedReturnNode = useRef(false);
+
+  // Spawn child ReturnNode on mount
+  useEffect(() => {
+    if (hasSpawnedReturnNode.current) return;
+    hasSpawnedReturnNode.current = true;
+
+    const returnNodeId = getReturnNodeId(id);
+    if (getNode(returnNodeId)) return;
+
+    setNodes((nodes) => [
+      ...nodes,
+      {
+        id: returnNodeId,
+        type: ReturnNode.type,
+        position: {
+          x: DEFAULT_WIDTH - RETURN_NODE_SIZE,
+          y: DEFAULT_HEIGHT / 2 - RETURN_NODE_SIZE / 2,
+        },
+        data: {},
+        parentId: id,
+        extent: "parent" as const,
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const paramCount = Math.max(
     MIN_PARAMS,
@@ -88,8 +127,8 @@ export function FunctionNode({
       <NodeResizer
         color="#ff0071"
         isVisible={selected}
-        minWidth={150}
-        minHeight={100}
+        minWidth={MIN_WIDTH}
+        minHeight={MIN_HEIGHT}
       />
       <div className="function-node-wrapper">
         <div className="function-node-header">
@@ -131,12 +170,6 @@ export function FunctionNode({
         </div>
         <div className="react-flow__node-default node-function"></div>
       </div>
-      <Handle
-        id={OUTPUT_HANDLE_ID}
-        type="source"
-        position={Position.Right}
-        isConnectable={true}
-      />
     </>
   );
 }
