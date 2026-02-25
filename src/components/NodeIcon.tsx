@@ -8,6 +8,7 @@ import { ParamNode } from "../nodes/ParamNode";
 import { DisplayNode } from "../nodes/DisplayNode";
 import { ReturnNode } from "../nodes/ReturnNode";
 import { FunctionNode } from "../nodes/FunctionNode";
+import { CallNode } from "../nodes/CallNode";
 
 type NodeIconProps = {
   type: (typeof nodeTypes)[number]["type"];
@@ -223,6 +224,30 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontWeight="bold"
           >
             RET
+          </text>
+        </svg>
+      );
+
+    case CallNode.type:
+      // Dark rounded rectangle with "call" label — mirrors the black-box node appearance
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect x="1" y="1" width="48" height="48" rx={borderRadius} />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="#a0c0ff"
+            fontSize="10"
+            fontWeight="bold"
+          >
+            call
           </text>
         </svg>
       );

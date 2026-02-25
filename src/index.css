@@ -317,6 +317,84 @@ body {
   color: #1a192b;
 }
 
+/* ── Call node ─────────────────────────────────────────────────────────── */
+
+.react-flow__node-call {
+  width: 140px;
+}
+
+.call-node {
+  width: 140px;
+  background: #1a1a2e;
+  border: 1.5px solid #4a4a8a;
+  border-radius: 6px;
+  color: #e0e0f0;
+  font-size: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.call-node-header {
+  height: 36px;
+  background: #16213e;
+  border-bottom: 1px solid #4a4a8a;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.call-node-select {
+  width: 100%;
+  background: #0f3460;
+  border: 1px solid #4a4a8a;
+  border-radius: 3px;
+  color: #e0e0f0;
+  font-size: 11px;
+  padding: 2px 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.call-node-select:focus {
+  border-color: var(--xy-theme-selected);
+}
+
+.call-node-body {
+  padding: 8px 8px 8px 16px;
+}
+
+.call-node-param-row {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.call-node-param-label {
+  font-size: 11px;
+  color: #a0c0ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.call-node-empty {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  color: #505070;
+  font-style: italic;
+  font-size: 11px;
+}
+
+/* sidebar icon */
+.node-icon-call rect {
+  fill: #1a1a2e;
+  stroke: #4a4a8a;
+  stroke-width: 2;
+}
+
+/* ── Function node - initial dimensions ───────────────────────────────── */
+
 /* React Flow wrapper for function nodes - sets initial dimensions */
 .react-flow__node-function {
   width: var(--function-node-default-width);

@@ -10,6 +10,7 @@ import { EditableValue } from "../components/EditableValue";
 import { ParamNode } from "./ParamNode";
 import { ReturnNode } from "./ReturnNode";
 import { getCssVar } from "../utils";
+import { useFunctionNamespace } from "../FunctionNamespaceContext";
 
 const MIN_PARAMS = 1; // todo: should be 0
 const DEFAULT_PARAM_COUNT = 1;
@@ -62,6 +63,16 @@ export function FunctionNode({
     useReactFlow();
   const allNodes = useNodes();
   const hasSpawnedChildNodes = useRef(false);
+  const { register, unregister } = useFunctionNamespace();
+
+  // Keep the global namespace in sync with this node's name
+  useEffect(() => {
+    const name = data?.name ?? DEFAULT_NAME;
+    register(name, id);
+    return () => {
+      unregister(name, id);
+    };
+  }, [data?.name, id, register, unregister]);
 
   const paramCount = Math.max(
     MIN_PARAMS,
@@ -122,6 +133,7 @@ export function FunctionNode({
     // coordinates → wrong coordinate space → intersection math fails.
     // Without the 3rd arg, React Flow uses internalNode which has positionAbsolute (correct).
     // allNodes stays in the deps array only to re-trigger this memo when nodes change.
+    void allNodes;
     return getIntersectingNodes({ id: id }, true).length;
   }, [allNodes, getIntersectingNodes, id]);
 

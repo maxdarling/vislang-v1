@@ -22,14 +22,16 @@ import { ParamNode } from "./nodes/ParamNode";
 import { DisplayNode } from "./nodes/DisplayNode";
 import { ReturnNode } from "./nodes/ReturnNode";
 import { FunctionNode } from "./nodes/FunctionNode";
+import { CallNode } from "./nodes/CallNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
+import { FunctionNamespaceProvider } from "./FunctionNamespaceContext";
 
 // master node type list
 export const nodeTypesByCategory = {
   data: [DataNode],
   arith: [AddNode, SubNode, MulNode, DivNode],
-  function: [FunctionNode, ParamNode, ReturnNode],
+  function: [FunctionNode, ParamNode, ReturnNode, CallNode],
   other: [DisplayNode],
 } as const;
 
@@ -132,7 +134,7 @@ function DnDFlow() {
         id: getId(),
         type,
         position,
-        data: {}, // nodes should init themselves.
+        data: {}, // nodes should init themselves. logic here leads to complexity.
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -166,9 +168,11 @@ function DnDFlow() {
 export default function App() {
   return (
     <ReactFlowProvider>
-      <DnDProvider>
-        <DnDFlow />
-      </DnDProvider>
+      <FunctionNamespaceProvider>
+        <DnDProvider>
+          <DnDFlow />
+        </DnDProvider>
+      </FunctionNamespaceProvider>
     </ReactFlowProvider>
   );
 }

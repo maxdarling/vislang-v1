@@ -1,9 +1,12 @@
 # todo
 ### functions (see functions-notes.md)
-- create global namespace (map of string name to func node)
+- create global namespace (map of string name to func node id)
+  - on func node name change, update it's entry in map
 - create call nodes (black boxes with names)
   - dropdown to select a function name from global namespace
-  - upon changing name that, it morphs to the proper call signature, i.e. named params as INPUTS and return node as output
+  - upon changing name that, it morphs to the proper call signature
+    - inputs: handles labeled with corresponding function def's param names
+    - output: an output handle
 
 ### bugs
 -
