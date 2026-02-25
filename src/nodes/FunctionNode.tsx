@@ -116,8 +116,13 @@ export function FunctionNode({
   }, []);
 
   const intersectionCount = useMemo(() => {
-    return getIntersectingNodes({ id: id }, true, allNodes).length;
-    // note: isMemo has ~no benefit here since allNodes will have been changed on ~every render.
+    // Do NOT pass allNodes as the 3rd argument: when nodes have a parentId (param/return), their
+    // user-facing `position` is parent-relative. Passing allNodes makes React Flow use those
+    // relative positions for the rect comparison, while the function node's rect is in absolute
+    // coordinates → wrong coordinate space → intersection math fails.
+    // Without the 3rd arg, React Flow uses internalNode which has positionAbsolute (correct).
+    // allNodes stays in the deps array only to re-trigger this memo when nodes change.
+    return getIntersectingNodes({ id: id }, true).length;
   }, [allNodes, getIntersectingNodes, id]);
 
   const onValueChange = useCallback(
