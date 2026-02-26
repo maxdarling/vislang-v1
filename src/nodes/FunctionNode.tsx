@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   type NodeProps,
   type Node,
+  type ResizeParams,
+  type ResizeDragEvent,
   useReactFlow,
   useNodes,
   NodeResizer,
@@ -58,6 +60,7 @@ export function FunctionNode({
   id,
   data,
   selected,
+  height,
 }: NodeProps<FunctionNodeType>) {
   const { getIntersectingNodes, updateNodeData, setNodes, getNode } =
     useReactFlow();
@@ -99,6 +102,7 @@ export function FunctionNode({
         data: {},
         parentId: id,
         extent: "parent" as const,
+        draggable: false,
       });
     }
 
@@ -116,6 +120,7 @@ export function FunctionNode({
           data: { name: `p${i}` },
           parentId: id,
           extent: "parent" as const,
+          draggable: false,
         });
       }
     }
@@ -144,43 +149,113 @@ export function FunctionNode({
     [id, updateNodeData],
   );
 
+  const currentHeight = height ?? DEFAULT_HEIGHT;
+
+  // Reposition all existing param nodes for a given count and container height
+  const repositionParamNodes = useCallback(
+    (nodes: Node[], count: number, containerHeight: number): Node[] =>
+      nodes.map((n) => {
+        for (let i = 0; i < count; i++) {
+          if (n.id === getParamNodeId(id, i)) {
+            return {
+              ...n,
+              position: { x: 0, y: getParamNodeY(i, count, containerHeight) },
+            };
+          }
+        }
+        return n;
+      }),
+    [id],
+  );
+
   const incrementParams = useCallback(() => {
     const newIndex = paramCount;
     const newParamCount = paramCount + 1;
     const paramNodeId = getParamNodeId(id, newIndex);
 
-    // Add new ParamNode
-    setNodes((nodes) => [
-      ...nodes,
-      {
-        id: paramNodeId,
-        type: ParamNode.type,
-        position: {
-          x: 0,
-          y: getParamNodeY(newIndex, newParamCount, DEFAULT_HEIGHT),
+    setNodes((nodes) => {
+      const repositioned = repositionParamNodes(
+        nodes,
+        newParamCount,
+        currentHeight,
+      );
+      return [
+        ...repositioned,
+        {
+          id: paramNodeId,
+          type: ParamNode.type,
+          position: {
+            x: 0,
+            y: getParamNodeY(newIndex, newParamCount, currentHeight),
+          },
+          data: { name: `p${newIndex}` },
+          parentId: id,
+          extent: "parent" as const,
+          draggable: false,
         },
-        data: { name: `p${newIndex}` },
-        parentId: id,
-        extent: "parent" as const,
-      },
-    ]);
+      ];
+    });
 
-    // Update param count in data
     updateNodeData(id, { paramCount: newParamCount });
-  }, [id, paramCount, setNodes, updateNodeData]);
+  }, [
+    id,
+    paramCount,
+    currentHeight,
+    setNodes,
+    updateNodeData,
+    repositionParamNodes,
+  ]);
 
   const decrementParams = useCallback(() => {
     if (paramCount <= MIN_PARAMS) return;
 
     const removeIndex = paramCount - 1;
     const paramNodeId = getParamNodeId(id, removeIndex);
+    const newParamCount = paramCount - 1;
 
-    // Remove the last ParamNode
-    setNodes((nodes) => nodes.filter((n) => n.id !== paramNodeId));
+    setNodes((nodes) => {
+      const filtered = nodes.filter((n) => n.id !== paramNodeId);
+      return repositionParamNodes(filtered, newParamCount, currentHeight);
+    });
 
-    // Update param count in data
-    updateNodeData(id, { paramCount: paramCount - 1 });
-  }, [id, paramCount, setNodes, updateNodeData]);
+    updateNodeData(id, { paramCount: newParamCount });
+  }, [
+    id,
+    paramCount,
+    currentHeight,
+    setNodes,
+    updateNodeData,
+    repositionParamNodes,
+  ]);
+
+  // Keep param/return nodes pinned to their sides when the function node is resized
+  const onResize = useCallback(
+    (_event: ResizeDragEvent, { width: w, height: h }: ResizeParams) => {
+      setNodes((nodes) =>
+        nodes.map((n) => {
+          if (n.id === getReturnNodeId(id)) {
+            return {
+              ...n,
+              position: {
+                x: w - RETURN_NODE_SIZE,
+                y: h / 2 - RETURN_NODE_SIZE / 2,
+              },
+            };
+          }
+          for (let i = 0; i < paramCount; i++) {
+            if (n.id === getParamNodeId(id, i)) {
+              return {
+                ...n,
+                position: { x: 0, y: getParamNodeY(i, paramCount, h) },
+              };
+            }
+          }
+          return n;
+        }),
+      );
+    },
+    [id, paramCount, setNodes],
+  );
 
   return (
     <>
@@ -189,6 +264,7 @@ export function FunctionNode({
         isVisible={selected}
         minWidth={MIN_WIDTH}
         minHeight={MIN_HEIGHT}
+        onResize={onResize}
       />
       <div className="function-node-wrapper">
         <div className="function-node-header">
