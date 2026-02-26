@@ -50,12 +50,6 @@ const reactFlowNodeTypes = Object.fromEntries(
 
 const initialNodes: Node[] = [
   {
-    id: "n0",
-    type: FunctionNode.type,
-    position: { x: 200, y: -150 },
-    data: {},
-  },
-  {
     id: "n1",
     type: DataNode.type,
     position: { x: 0, y: 0 },
@@ -85,6 +79,24 @@ const initialNodes: Node[] = [
     position: { x: 200, y: 100 },
     data: {},
   },
+  {
+    id: "n6",
+    type: FunctionNode.type,
+    position: { x: 300, y: -150 },
+    data: {},
+  },
+  {
+    id: "n7",
+    type: CallNode.type,
+    position: { x: 350, y: 100 },
+    data: {},
+  },
+  {
+    id: "n8",
+    type: DisplayNode.type,
+    position: { x: 575, y: 112 },
+    data: {},
+  },
 ];
 
 const initialEdges: Edge[] = [
@@ -92,7 +104,7 @@ const initialEdges: Edge[] = [
   { id: "n2-n3", source: "n2", target: "n3" },
   { id: "n3-n5", source: "n3", target: "n5" },
   { id: "n4-n5", source: "n4", target: "n5" },
-  { id: "n5-n6", source: "n5", target: "n6" },
+  { id: "n7-n8", source: "n7", target: "n8" },
 ];
 
 let id = 0;

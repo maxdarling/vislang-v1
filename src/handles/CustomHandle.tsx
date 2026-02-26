@@ -1,11 +1,11 @@
 import { Handle, useNodeConnections, type HandleProps } from "@xyflow/react";
 
 interface CustomHandleProps extends HandleProps {
-  connectionCount: number;
+  maxConnections: number;
 }
 
 const CustomHandle = (props: CustomHandleProps) => {
-  const { connectionCount, ...handleProps } = props;
+  const { maxConnections, ...handleProps } = props;
   const connections = useNodeConnections({
     handleType: props.type,
   });
@@ -13,7 +13,7 @@ const CustomHandle = (props: CustomHandleProps) => {
   return (
     <Handle
       {...handleProps}
-      isConnectable={connections.length < connectionCount}
+      isConnectable={connections.length < maxConnections}
     />
   );
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Handle,
   Position,
@@ -10,6 +10,7 @@ import {
 } from "@xyflow/react";
 import { useFunctionNamespace } from "../FunctionNamespaceContext";
 import { ParamNode } from "./ParamNode";
+import CustomHandle from "../handles/CustomHandle";
 
 type CallNodeData = { functionName?: string };
 type CallNodeType = Node<CallNodeData, "call">;
@@ -63,8 +64,13 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
       });
   }, [allNodes, selectedFunctionNodeId]);
 
-  // Notify React Flow whenever the handle set changes (count or identity)
+  // We must notify React Flow when dynamically changing handles.
+  // Subtlety: Don't do this on mount, or else it messes with the view.
+  const prevParamsLength = useRef<number | null>(null);
   useEffect(() => {
+    const prev = prevParamsLength.current;
+    prevParamsLength.current = params.length;
+    if (prev === null || prev === params.length) return;
     updateNodeInternals(id);
   }, [id, params.length, updateNodeInternals]);
 
@@ -116,10 +122,11 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
 
       {/* One input handle per param, aligned with its label row */}
       {params.map((_, index) => (
-        <Handle
+        <CustomHandle
           key={`param-${index}`}
           type="target"
           position={Position.Left}
+          maxConnections={1}
           id={`param-${index}`}
           style={{ top: getParamHandleTop(index) }}
         />

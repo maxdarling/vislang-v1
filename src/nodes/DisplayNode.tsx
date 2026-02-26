@@ -16,7 +16,7 @@ export function DisplayNode() {
       <CustomHandle
         type="target"
         position={Position.Left}
-        connectionCount={maxConnections}
+        maxConnections={maxConnections}
       />
       <div className="react-flow__node-default node-display">
         DISP
