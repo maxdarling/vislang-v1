@@ -110,7 +110,7 @@ const initialEdges: Edge[] = [
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-// "drag and drop" flow: a wrapper that includes a drag-and-drop sidebar and a flow canvas.
+// "drag and drop" flow: a wrapper that includes a drag-and-drop sidebar and a flow instance.
 function DnDFlow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);

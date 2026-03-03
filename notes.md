@@ -1,19 +1,18 @@
 # todo
 ### functions (see functions-notes.md)
-- create global namespace (map of string name to func node id)
-  - on func node name change, update it's entry in map
-- create call nodes (black boxes with names)
-  - dropdown to select a function name from global namespace
-  - upon changing name that, it morphs to the proper call signature
-    - inputs: handles labeled with corresponding function def's param names
-    - output: an output handle
+- invocation (create a "runtime" for call invocations)
+  - attempt #1:
 
 ### bugs
 -
 
 ### stretch:
 - type system?
-- can i get nodes to run arbitrary code?
+- interop between graph code and JS
+  - idea: give option to define function as JS code. fun exercise, and good for performance to have "pre-compiled" routines.
+  - idea: given that the above is desirable, we want to solve graph -> JS conversion.
+    - stochastic route: see if an LLM can compile it for us?
+    - deterministic route: or, check CS research to see if there's formal DAG representations/grammars/conversions to traditional imperative code?
 - layouting with a library like elkjs. docs: https://reactflow.dev/examples/layout/elkjs
 - peruse the examples! https://reactflow.dev/examples. e.g. animating edges.
 

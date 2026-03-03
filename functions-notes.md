@@ -11,24 +11,29 @@
 - UI: calling happens via "call nodes" that correspond to a function node. left: parameters are labeled and accept values. right: 0 or 1 outputs.
   - parameters: nodes. node label is param name.
   - return value: a node labeled "RET", accepting one input. at call time, the value of this node will be the return value of the function.
-- call time:
-  - (imagine call happens via a "run" button, for clarity)
-  - construct a "runtime" environment:
-    - clone the function def (e.g. all the nodes and edges it contains) into a "call instance".
-      - each call node has a dedicated "call instance" where the invocation will take place.
-    - "plug in" (i.e. copy) the call node's arguments to the call instance.
+  - call nodes have a "run" button (simple, debuggable)
+  - function nodes have a "refresh" button (simple, debuggable)
+- Implementation:
+  - a call is invoked via the "run" button on a call node
+  - the invocation will take place in a "runtime" environment, which is a separate react flow instance dedicated to all function invocations.
+    - UI note: i assume only 1 react flow instance on the screen at one time, and a browser tab style switch mechanism at top, or equivalent.
+  - the runtime environment consists of "call instances", clones of function defs with a caller's arguments substituted for the parameters.
+  - each function def has at most 1 call instance. all call nodes for a given function share the same call instance - races are not handled explicitly, but designed around via the run button idiom.
+  - an invocation takes places according to these steps:
+    - if an invocation does not already exist for its corresponding function def, create it in the runtime
+      - an invocation is created by cloning the corresponding func def, e.g. all nodes and edges, and assigning the callers arg values to the corresponding param nodes.
+      - impl detail: param nodes will become data nodes, as currently we only support 1 type (number). when we add types in the future, param nodes will be typed.
+      - impl detail: the "refresh" button on the func node recreates the invocation. this is how we'll handle syncing updates between def and invocation during the MVP phase.
+      - impl Q: can cloning/propagation work via the call node having a 'setNodes()' for the runtime flow, or is that insufficient?
     - *function runs via standard react flow value propagation*
-    - retrieve (i.e. copy) the result of the call instance to the call node, which becomes its value as any normal node would have.
-
-- ambiguities:
-  - how to "construct a 'runtime'"
-    - make a separate flow instance? or just use one global flow and hide/invisify the nodes? (unclear if either are possible)
-    - in v1, no need to hide or sandbox anything. put the call instance machinery out in the open to see.
+    - retrieve the result of the call instance to the call node, which becomes its value as any normal node would have.
+      - impl detail: the invocation's RET node may change values multiple times in quick succession due to multiple propagations for each sequentially updated param node. to deal with this, just propagate the invocation's return value to the call node each time it updates.
+      - impl Q: like above. afaict the call node could pass a setter callback to the RET node.
 
 - challenges:
   - timing: nodes are all updating independently. no ordered control flow like w/ normal funcs. value of func is undefined/stale during execution before we have a return value.
   - overhead: for each function call, we pay overhead (cloning the function def and living with those nodes for ever after).
-    - one way to avoid this node overhead is to "multiplex" call invocations on the same call instance. E.g. each instance has a queue of calls/input to work through sequentially.
+    - one way to avoid this node overhead is to "multiplex" call on the same invocation. E.g. each instance has a queue of calls/input to work through sequentially.
 
 # implementation questions
 - params: nodes vs handles debate
