@@ -25,7 +25,11 @@ const MIN_HEIGHT = getCssVar("--function-node-min-height", 100);
 const RETURN_NODE_SIZE = getCssVar("--return-node-size", 50);
 const PARAM_NODE_SIZE = getCssVar("--param-node-size", 50);
 
-type FunctionNodeData = { name?: string; paramCount?: number };
+type FunctionNodeData = {
+  name?: string;
+  paramCount?: number;
+  highlighted?: boolean;
+};
 type FunctionNodeType = Node<FunctionNodeData, "function">;
 
 // Helper to generate param node IDs for a given function node
@@ -304,7 +308,9 @@ export function FunctionNode({
             </button>
           </div>
         </div>
-        <div className="react-flow__node-default node-function"></div>
+        <div
+          className={`react-flow__node-default node-function${data?.highlighted ? " function-node-highlighted" : ""}`}
+        ></div>
       </div>
     </>
   );

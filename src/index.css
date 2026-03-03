@@ -415,6 +415,10 @@ body {
   box-sizing: border-box;
 }
 
+.react-flow__node-default.node-function.function-node-highlighted {
+  border: 3px solid red;
+}
+
 .react-flow__node-default.node-function .function-label {
   font-weight: bold;
   margin-bottom: 8px;
@@ -453,6 +457,26 @@ body {
   justify-content: center;
   cursor: text;
   text-overflow: ellipsis;
+}
+
+/* ── Detach toolbar ───────────────────────────────────────────────────── */
+
+.detach-toolbar-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #b1b1b7;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a192b;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.detach-toolbar-btn:hover {
+  border-color: red;
+  background: #fff0f0;
+  color: red;
 }
 
 .dndflow .reactflow-wrapper {

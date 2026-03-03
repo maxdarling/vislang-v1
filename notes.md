@@ -1,10 +1,12 @@
 # todo
 ### functions (see functions-notes.md)
 - invocation (create a "runtime" for call invocations)
-  - attempt #1:
+  - attempt #1: see function-nodes.md
 
-### bugs
--
+### misc
+- center nodes on drop
+  - desired: the dropped node's center to line up with the cursor position, rather than its upper left. this would happen  by offsetting by the node's default height/width at drop-time. we're missing a uniform way to access default height/width for all nodes (default because some nodes are resizeable, e.g. function nodes).
+  - note: it's unclear if this is even desirable. will likely depend on feel. also, what do other apps do?
 
 ### stretch:
 - type system?
