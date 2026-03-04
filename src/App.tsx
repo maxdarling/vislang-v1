@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -13,46 +13,18 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { AddNode } from "./nodes/arith/AddNode";
-import { SubNode } from "./nodes/arith/SubNode";
-import { MulNode } from "./nodes/arith/MulNode";
-import { DivNode } from "./nodes/arith/DivNode";
 import { DataNode } from "./nodes/DataNode";
-import { ParamNode } from "./nodes/ParamNode";
-import { DisplayNode } from "./nodes/DisplayNode";
-import { ReturnNode } from "./nodes/ReturnNode";
+import { MulNode } from "./nodes/arith/MulNode";
+import { AddNode } from "./nodes/arith/AddNode";
 import { FunctionNode } from "./nodes/FunctionNode";
 import { CallNode } from "./nodes/CallNode";
+import { DisplayNode } from "./nodes/DisplayNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
 import { FunctionNamespaceProvider } from "./FunctionNamespaceContext";
-import { withDetachToolbar } from "./components/DetachToolbar";
-
-// master node type list
-export const nodeTypesByCategory = {
-  data: [DataNode],
-  arith: [AddNode, SubNode, MulNode, DivNode],
-  function: [FunctionNode, ParamNode, ReturnNode, CallNode],
-  other: [DisplayNode],
-} as const;
-
-export const nodeTypes = [
-  // todo: better name
-  ...nodeTypesByCategory.data,
-  ...nodeTypesByCategory.arith,
-  ...nodeTypesByCategory.function,
-  ...nodeTypesByCategory.other,
-] as const;
-
-// magic format for Flow. ignore. defined outside component to prevent re-render.
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const reactFlowNodeTypes: Record<string, any> = Object.fromEntries(
-  nodeTypes.map((NodeComponent) => [
-    NodeComponent.type,
-    withDetachToolbar(NodeComponent as any),
-  ]),
-);
-/* eslint-enable @typescript-eslint/no-explicit-any */
+import { RuntimeProvider } from "./RuntimeContext";
+import { RuntimeFlow } from "./RuntimeFlow";
+import { reactFlowNodeTypes } from "./nodeRegistry";
 
 const initialNodes: Node[] = [
   {
@@ -310,14 +282,51 @@ function DnDFlow() {
   );
 }
 
+type TabId = "main" | "runtime";
+
 export default function App() {
+  const [activeTab, setActiveTab] = useState<TabId>("main");
+
   return (
-    <ReactFlowProvider>
+    <RuntimeProvider>
       <FunctionNamespaceProvider>
         <DnDProvider>
-          <DnDFlow />
+          <div className="app-layout">
+            <div className="tab-bar">
+              <button
+                type="button"
+                className={`tab-btn${activeTab === "main" ? " active" : ""}`}
+                onClick={() => setActiveTab("main")}
+              >
+                Main
+              </button>
+              <button
+                type="button"
+                className={`tab-btn${activeTab === "runtime" ? " active" : ""}`}
+                onClick={() => setActiveTab("runtime")}
+              >
+                Runtime
+              </button>
+            </div>
+            <div className="tab-content">
+              <div
+                className={`tab-panel${activeTab !== "main" ? " hidden" : ""}`}
+              >
+                <ReactFlowProvider>
+                  <DnDFlow />
+                </ReactFlowProvider>
+              </div>
+              <div
+                className={`tab-panel${activeTab !== "runtime" ? " hidden" : ""}`}
+              >
+                <ReactFlowProvider>
+                  <RuntimeFlow />
+                </ReactFlowProvider>
+              </div>
+            </div>
+          </div>
         </DnDProvider>
       </FunctionNamespaceProvider>
-    </ReactFlowProvider>
+    </RuntimeProvider>
   );
 }

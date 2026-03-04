@@ -8,6 +8,7 @@ const CustomHandle = (props: CustomHandleProps) => {
   const { maxConnections, ...handleProps } = props;
   const connections = useNodeConnections({
     handleType: props.type,
+    handleId: props.id ?? undefined,
   });
 
   return (

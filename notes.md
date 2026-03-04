@@ -1,7 +1,17 @@
 # todo
 ### functions (see functions-notes.md)
-- invocation (create a "runtime" for call invocations)
-  - attempt #1: see function-nodes.md
+- remove intersection counter (doesn't make sense anymore now with DnD and detach mechanism)
+
+### bugs
+- min width/height update
+  - behavior: resizing the node observes min width/height. but if you then click away and then click back and start resizing, the mins seem to change
+- function call renaming breaks future calls
+  - repro steps: call a function. then rename it. observe lots of console warnings about edges. run it again. then func output (or disp, at least) shows nil.
+
+### features
+- persistence
+  - stage 1: save/load button lets you read/write state to local storage.
+  - stage 2: multiple "projects" can be saved at once.
 
 ### misc
 - center nodes on drop

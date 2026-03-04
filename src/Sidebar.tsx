@@ -1,10 +1,15 @@
 import React from "react";
 import { useDnD } from "./DnDContext";
 import { NodeIcon } from "./components/NodeIcon";
-import { nodeTypesByCategory } from "./App";
+import { nodeTypesByCategory } from "./nodeRegistry";
 
 // Nodes that should not appear in the sidebar
-const excludedNodeTypes = new Set(["param", "return"]);
+const excludedNodeTypes = new Set([
+  "param",
+  "return",
+  "runtimeReturn",
+  "callInstance",
+]);
 
 export default function Sidebar() {
   const [_, setType] = useDnD();

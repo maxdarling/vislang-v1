@@ -1,4 +1,4 @@
-import { nodeTypes } from "../App";
+import { nodeTypes } from "../nodeRegistry";
 import { AddNode } from "../nodes/arith/AddNode";
 import { SubNode } from "../nodes/arith/SubNode";
 import { MulNode } from "../nodes/arith/MulNode";
