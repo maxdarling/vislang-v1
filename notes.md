@@ -1,22 +1,22 @@
 # todo
-
-### misc
-- remove intersection counter (doesn't make sense anymore now with DnD and detach mechanism)
-
 ### features
 - persistence
   - stage 1: save/load button lets you read/write state to local storage.
   - stage 2: multiple "projects" can be saved at once.
-- feature: nesting + recursion
+- nesting + recursion
   - this is huge. and it'll force me to come up with a better (more general) design.
 
 ### bugs
-- min width/height update
-  - behavior: resizing the node observes min width/height. but if you then click away and then click back and start resizing, the mins seem to change
-- function call renaming breaks future calls
-  - repro steps: call a function. then rename it. observe lots of console warnings about edges. run it again. then func output (or disp, at least) shows nil.
+-
+
+### misc
+-
 
 ### backlog
+- enforce unique function names.
+  - new functions try to name themselves fooN (start low and count up until there's no conflict)
+  - function name value only saves on "enter" key press. if there's a conflict, keep the input field open and highlight it red (and make it shake slightly) to signify error. if the user "ESC"s or clicks out, reset the name to empty.
+    - imo, impl this via extensions to editable value. submit on enter with a "verify" function is a good paradigm for everything else that uses editableValue (e.g. data nodes)
 - center nodes on drop
   - desired: the dropped node's center to line up with the cursor position, rather than its upper left. this would happen  by offsetting by the node's default height/width at drop-time. we're missing a uniform way to access default height/width for all nodes (default because some nodes are resizeable, e.g. function nodes).
   - note: it's unclear if this is even desirable. will likely depend on feel. also, what do other apps do?

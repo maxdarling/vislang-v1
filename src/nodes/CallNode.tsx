@@ -15,7 +15,7 @@ import { useRuntime } from "../RuntimeContext";
 import { ParamNode } from "./ParamNode";
 import CustomHandle from "../handles/CustomHandle";
 
-type CallNodeData = { functionName?: string; val?: number };
+type CallNodeData = { functionNodeId?: string; val?: number };
 type CallNodeType = Node<CallNodeData, "call">;
 
 // Layout constants (pixels)
@@ -42,15 +42,17 @@ function getParamHandleTop(index: number): number {
 }
 
 export function CallNode({ id, data }: NodeProps<CallNodeType>) {
-  const { updateNodeData, getNodes, getEdges } = useReactFlow();
+  const { updateNodeData, getNodes, getEdges, setEdges } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const { namespace } = useFunctionNamespace();
   const { invoke, returnValues } = useRuntime();
   const allNodes = useNodes();
 
-  const selectedFunctionName = data?.functionName;
-  const selectedFunctionNodeId = selectedFunctionName
-    ? namespace[selectedFunctionName]
+  const selectedFunctionNodeId = data?.functionNodeId;
+
+  // namespace is keyed by nodeId → name, so direct lookup
+  const selectedFunctionName = selectedFunctionNodeId
+    ? namespace[selectedFunctionNodeId]
     : undefined;
 
   // Collect + sort param nodes belonging to the selected function
@@ -76,7 +78,18 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
     prevParamsLength.current = params.length;
     if (prev === null || prev === params.length) return;
     updateNodeInternals(id);
-  }, [id, params.length, updateNodeInternals]);
+
+    // Remove edges targeting handles that no longer exist
+    if (params.length < (prev ?? 0)) {
+      setEdges((edges) =>
+        edges.filter((e) => {
+          if (e.target !== id || !e.targetHandle) return true;
+          const idx = parseInt(e.targetHandle.split("-")[1] ?? "0", 10);
+          return idx < params.length;
+        }),
+      );
+    }
+  }, [id, params.length, updateNodeInternals, setEdges]);
 
   // --- Arg values from connections ---
   const inConnections = useNodeConnections({ handleType: "target" });
@@ -128,12 +141,12 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
 
   const onFunctionSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      updateNodeData(id, { functionName: e.target.value || undefined });
+      updateNodeData(id, { functionNodeId: e.target.value || undefined });
     },
     [id, updateNodeData],
   );
 
-  const functionNames = Object.keys(namespace);
+  const namespaceEntries = Object.entries(namespace);
   const nodeHeight = getCallNodeHeight(params.length);
 
   return (
@@ -141,14 +154,14 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
       {/* Header: function selector + run button */}
       <div className="call-node-header">
         <select
-          value={selectedFunctionName ?? ""}
+          value={selectedFunctionNodeId ?? ""}
           onChange={onFunctionSelect}
           className="call-node-select nodrag"
           title="Select function"
         >
           <option value="">— select —</option>
-          {functionNames.map((name) => (
-            <option key={name} value={name}>
+          {namespaceEntries.map(([nodeId, name]) => (
+            <option key={nodeId} value={nodeId}>
               {name}
             </option>
           ))}

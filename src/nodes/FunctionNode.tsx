@@ -55,22 +55,21 @@ function getParamNodeY(
   return spacing * (index + 1) - PARAM_NODE_SIZE / 2;
 }
 
-// 'useNodes' performance note:
-// - useNodes will cause rerender on any node change, incl select or drag. this is suboptimal as intersection only
-// depends on 1. node create/delete (e.g. inside the boundary) and 2. dragging nodes.
-// - separate but useful optimization: once we multiplex flows/views, use 'useStore' to select only the relevant subset
-// (i.e. the current "workspace", etc.)
 export function FunctionNode({
   id,
   data,
   selected,
   height,
 }: NodeProps<FunctionNodeType>) {
-  const { getIntersectingNodes, updateNodeData, setNodes, getNode } =
-    useReactFlow();
+  const { updateNodeData, setNodes, getNode } = useReactFlow();
   const allNodes = useNodes();
   const hasSpawnedChildNodes = useRef(false);
   const { register, unregister } = useFunctionNamespace();
+
+  const childCount = useMemo(
+    () => allNodes.filter((n) => n.parentId === id).length,
+    [allNodes, id],
+  );
 
   // Keep the global namespace in sync with this node's name
   useEffect(() => {
@@ -94,6 +93,11 @@ export function FunctionNode({
     const returnNodeId = getReturnNodeId(id);
     const nodesToAdd: Node[] = [];
 
+    // impl detail: param/ret nodes don't use "parent" extent because they're
+    // non-draggable and positioned automatically. otherwise, child extents are
+    // created internally that act as an additional floor on min width/height, which
+    // we don't want.
+
     // Add ReturnNode if not exists
     if (!getNode(returnNodeId)) {
       nodesToAdd.push({
@@ -105,7 +109,6 @@ export function FunctionNode({
         },
         data: {},
         parentId: id,
-        extent: "parent" as const,
         draggable: false,
       });
     }
@@ -123,7 +126,6 @@ export function FunctionNode({
           },
           data: { name: `p${i}` },
           parentId: id,
-          extent: "parent" as const,
           draggable: false,
         });
       }
@@ -134,17 +136,6 @@ export function FunctionNode({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const intersectionCount = useMemo(() => {
-    // Do NOT pass allNodes as the 3rd argument: when nodes have a parentId (param/return), their
-    // user-facing `position` is parent-relative. Passing allNodes makes React Flow use those
-    // relative positions for the rect comparison, while the function node's rect is in absolute
-    // coordinates → wrong coordinate space → intersection math fails.
-    // Without the 3rd arg, React Flow uses internalNode which has positionAbsolute (correct).
-    // allNodes stays in the deps array only to re-trigger this memo when nodes change.
-    void allNodes;
-    return getIntersectingNodes({ id: id }, true).length;
-  }, [allNodes, getIntersectingNodes, id]);
 
   const onValueChange = useCallback(
     (name: string) => {
@@ -194,7 +185,6 @@ export function FunctionNode({
           },
           data: { name: `p${newIndex}` },
           parentId: id,
-          extent: "parent" as const,
           draggable: false,
         },
       ];
@@ -284,7 +274,7 @@ export function FunctionNode({
               labelClassName="function-node-name-label"
               inputAriaLabel="Function name"
             />
-            <span className="function-node-intersection-count">{`(${intersectionCount} nodes)`}</span>
+            <span className="function-node-child-count">{`(${childCount} nodes)`}</span>
           </div>
           <div className="function-node-params-row">
             <span className="function-node-params-label">params:</span>

@@ -6,14 +6,14 @@ import {
   type ReactNode,
 } from "react";
 
-/** Maps function name → the node ID of the FunctionNode that owns that name. */
+/** Maps FunctionNode ID → the display name of that function. */
 export type FunctionNamespace = Record<string, string>;
 
 interface FunctionNamespaceContextValue {
   namespace: FunctionNamespace;
-  /** Register (or overwrite) a name → nodeId mapping. */
+  /** Register (or overwrite) a nodeId → name mapping. */
   register: (name: string, nodeId: string) => void;
-  /** Remove a name → nodeId mapping, but only if nodeId is still the current owner. */
+  /** Remove a nodeId → name mapping, but only if name still matches. */
   unregister: (name: string, nodeId: string) => void;
 }
 
@@ -31,14 +31,14 @@ export function FunctionNamespaceProvider({
   const [namespace, setNamespace] = useState<FunctionNamespace>({});
 
   const register = useCallback((name: string, nodeId: string) => {
-    setNamespace((prev) => ({ ...prev, [name]: nodeId }));
+    setNamespace((prev) => ({ ...prev, [nodeId]: name }));
   }, []);
 
   const unregister = useCallback((name: string, nodeId: string) => {
     setNamespace((prev) => {
-      if (prev[name] !== nodeId) return prev; // not the owner, leave it alone
+      if (prev[nodeId] !== name) return prev;
       const next = { ...prev };
-      delete next[name];
+      delete next[nodeId];
       return next;
     });
   }, []);
