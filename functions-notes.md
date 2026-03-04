@@ -7,7 +7,7 @@
     - a section of instructions delineated by a label that can be jumped to (function name) and a special "return" keyword.
     - function calls are represented by the "call stack". at call time, the caller prepares a new "stack frame" for the callee with the necessary data to 1. restore the caller's state when the call ends (e.g. return address, regisers) and 2. setup the callee for execution (e.g. parameters, local variables).
 
-## call semantics: attempt 1
+## calling: attempt #1
 - UI: calling happens via "call nodes" that correspond to a function node. left: parameters are labeled and accept values. right: 0 or 1 outputs.
   - parameters: nodes. node label is param name.
   - return value: a node labeled "RET", accepting one input. at call time, the value of this node will be the return value of the function.
@@ -33,12 +33,12 @@
     - one way to avoid this node overhead is to "multiplex" call on the same invocation. E.g. each instance has a queue of calls/input to work through sequentially.
 
 
-## att 1 bugs Opus 4.6
+## calling: attempt #2
+we are missing recursion! and nesting. this is big. and for most languages should be in the initial design. oopsie.
 
-# implementation questions
-- params: nodes vs handles debate
-  - verdict: start with nodes, as they're the simplest (simple mapping of nodes/edges from funcdef time to runtime)
 
+
+# open questions
 - template vs value for functions and their nodes
   - currently every node is an expression, i.e. it has a value. but nodes in functions are different, they're templates. they don't have values.
   - easy sol: detect when a node is in a function def. if so, don't display its value.

@@ -1,6 +1,14 @@
 # todo
-### functions (see functions-notes.md)
+
+### misc
 - remove intersection counter (doesn't make sense anymore now with DnD and detach mechanism)
+
+### features
+- persistence
+  - stage 1: save/load button lets you read/write state to local storage.
+  - stage 2: multiple "projects" can be saved at once.
+- feature: nesting + recursion
+  - this is huge. and it'll force me to come up with a better (more general) design.
 
 ### bugs
 - min width/height update
@@ -8,18 +16,13 @@
 - function call renaming breaks future calls
   - repro steps: call a function. then rename it. observe lots of console warnings about edges. run it again. then func output (or disp, at least) shows nil.
 
-### features
-- persistence
-  - stage 1: save/load button lets you read/write state to local storage.
-  - stage 2: multiple "projects" can be saved at once.
-
-### misc
+### backlog
 - center nodes on drop
   - desired: the dropped node's center to line up with the cursor position, rather than its upper left. this would happen  by offsetting by the node's default height/width at drop-time. we're missing a uniform way to access default height/width for all nodes (default because some nodes are resizeable, e.g. function nodes).
   - note: it's unclear if this is even desirable. will likely depend on feel. also, what do other apps do?
 
 ### stretch:
-- type system?
+- type system
 - interop between graph code and JS
   - idea: give option to define function as JS code. fun exercise, and good for performance to have "pre-compiled" routines.
   - idea: given that the above is desirable, we want to solve graph -> JS conversion.
