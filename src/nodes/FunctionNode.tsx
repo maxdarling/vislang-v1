@@ -42,7 +42,7 @@ export function getReturnNodeId(functionNodeId: string) {
   return `${functionNodeId}-return`;
 }
 
-const DEFAULT_NAME = "function";
+const DEFAULT_NAME = "foo";
 
 // Helper to calculate Y position for a param node at a given index
 function getParamNodeY(

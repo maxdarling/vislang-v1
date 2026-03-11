@@ -1,10 +1,13 @@
 # todo
 ### features
+- control flow (if, loops)
+- nesting + recursion
+  - this is huge. and it'll force me to come up with a better (more general) design.
+  - most basic: peano arithmetic
+
 - persistence
   - stage 1: save/load button lets you read/write state to local storage.
   - stage 2: multiple "projects" can be saved at once.
-- nesting + recursion
-  - this is huge. and it'll force me to come up with a better (more general) design.
 
 ### bugs
 -
