@@ -79,6 +79,7 @@ body {
   --node-color-func: orange;
   --node-color-display: lightblue;
   --node-color-return: #dda0dd;
+  --node-color-logic: #e8a87c;
 
   /* Function node dimensions */
   --function-node-default-width: 250px;
@@ -175,6 +176,10 @@ body {
   fill: var(--node-color-return);
 }
 
+.node-icon-if rect {
+  fill: var(--node-color-logic);
+}
+
 .node-icon-function rect {
   fill: transparent;
   stroke: #1a192b;
@@ -253,6 +258,55 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+/* ── If node ──────────────────────────────────────────────────────────── */
+
+.react-flow__node-if {
+  width: 100px;
+}
+
+.if-node {
+  width: 100px;
+  background: var(--node-color-logic);
+  border: 1.5px solid #c47a4a;
+  border-radius: 6px;
+  font-size: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.if-node-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6px 0 6px 14px;
+  flex: 1;
+}
+
+.if-node-row {
+  display: flex;
+  align-items: center;
+}
+
+.if-node-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5a3a1a;
+}
+
+.if-node-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3a2210;
+  border-left: 1px solid #c47a4a;
+  min-width: 32px;
 }
 
 .react-flow__node-default.node-return {

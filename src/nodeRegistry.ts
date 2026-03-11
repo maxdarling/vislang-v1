@@ -10,12 +10,14 @@ import { FunctionNode } from "./nodes/FunctionNode";
 import { CallNode } from "./nodes/CallNode";
 import { RuntimeReturnNode } from "./nodes/RuntimeReturnNode";
 import { CallInstanceNode } from "./nodes/CallInstanceNode";
+import { IfNode } from "./nodes/IfNode";
 import { withDetachToolbar } from "./components/DetachToolbar";
 
 // master node type list
 export const nodeTypesByCategory = {
   data: [DataNode],
   arith: [AddNode, SubNode, MulNode, DivNode],
+  logic: [IfNode],
   function: [FunctionNode, ParamNode, ReturnNode, CallNode],
   other: [DisplayNode],
 } as const;
@@ -24,6 +26,7 @@ export const nodeTypes = [
   // todo: better name
   ...nodeTypesByCategory.data,
   ...nodeTypesByCategory.arith,
+  ...nodeTypesByCategory.logic,
   ...nodeTypesByCategory.function,
   ...nodeTypesByCategory.other,
 ] as const;

@@ -22,6 +22,7 @@ export default function Sidebar() {
   const categoryOrder: Array<keyof typeof nodeTypesByCategory> = [
     "data",
     "arith",
+    "logic",
     "function",
     "other",
   ];

@@ -1,6 +1,5 @@
 # todo
 ### features
-- control flow (if, loops)
 - nesting + recursion
   - this is huge. and it'll force me to come up with a better (more general) design.
   - most basic: peano arithmetic

@@ -9,6 +9,7 @@ import { DisplayNode } from "../nodes/DisplayNode";
 import { ReturnNode } from "../nodes/ReturnNode";
 import { FunctionNode } from "../nodes/FunctionNode";
 import { CallNode } from "../nodes/CallNode";
+import { IfNode } from "../nodes/IfNode";
 
 type NodeIconProps = {
   type: (typeof nodeTypes)[number]["type"];
@@ -224,6 +225,29 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontWeight="bold"
           >
             RET
+          </text>
+        </svg>
+      );
+
+    case IfNode.type:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect x="0" y="0" width="50" height="50" rx={borderRadius} />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+          >
+            IF
           </text>
         </svg>
       );
