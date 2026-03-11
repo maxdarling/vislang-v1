@@ -104,7 +104,7 @@ body {
 }
 
 .dndflow {
-  flex-direction: column;
+  flex-direction: row;
   display: flex;
   flex-grow: 1;
   height: 100%;
@@ -115,6 +115,7 @@ body {
   padding: 15px 10px;
   font-size: 12px;
   background: grey;
+  max-width: 130px;
 }
 
 .dndflow aside .description {
@@ -123,14 +124,17 @@ body {
 
 .dndflow aside .node-category {
   margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .dndflow aside .category-header {
+  width: 100%;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 14px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 8px;
   padding: 4px 0;
 }
 
@@ -140,7 +144,6 @@ body {
   padding: 4px;
   border: 2px solid #1a192b;
   border-radius: 4px;
-  margin-bottom: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -665,15 +668,4 @@ body {
 .dndflow .reactflow-wrapper {
   flex-grow: 1;
   height: 100%;
-}
-
-@media screen and (min-width: 768px) {
-  .dndflow {
-    flex-direction: row;
-  }
-
-  .dndflow aside {
-    width: 20%;
-    max-width: 250px;
-  }
 }
