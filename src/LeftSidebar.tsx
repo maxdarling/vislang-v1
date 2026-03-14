@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback } from "react";
 import { useWorkspace, type Workspace } from "./WorkspaceContext";
 import { useFunctionNamespace } from "./FunctionNamespaceContext";
+import { clearAllPersistedData } from "./persistence";
 
 function WorkspaceItem({
   workspace,
@@ -93,6 +94,9 @@ export function LeftSidebar() {
     addWorkspace,
     renameWorkspace,
     removeWorkspace,
+    autosave,
+    setAutosave,
+    triggerSave,
   } = useWorkspace();
 
   const { namespace } = useFunctionNamespace();
@@ -112,9 +116,51 @@ export function LeftSidebar() {
     console.log("Run program with params:", paramValues);
     setRunOutput("—");
   }, [paramValues]);
+  const [saveFlash, setSaveFlash] = useState(false);
+
+  const handleSave = useCallback(() => {
+    triggerSave();
+    setSaveFlash(true);
+    setTimeout(() => setSaveFlash(false), 1200);
+  }, [triggerSave]);
+
+  const handleReset = useCallback(() => {
+    if (
+      window.confirm("Reset all workspaces to defaults? This cannot be undone.")
+    ) {
+      clearAllPersistedData();
+      window.location.reload();
+    }
+  }, []);
 
   return (
     <div className="left-sidebar">
+      <div className="left-sidebar-persist">
+        <button
+          type="button"
+          className={`persist-btn save-btn${saveFlash ? " flashed" : ""}`}
+          onClick={handleSave}
+          title="Save all workspace state now"
+        >
+          {saveFlash ? "Saved!" : "Save"}
+        </button>
+        <button
+          type="button"
+          className="persist-btn reset-btn"
+          onClick={handleReset}
+          title="Clear all saved state and reset to defaults"
+        >
+          Reset
+        </button>
+      </div>
+      <label className="autosave-toggle">
+        <input
+          type="checkbox"
+          checked={autosave}
+          onChange={(e) => setAutosave(e.target.checked)}
+        />
+        <span>autosave</span>
+      </label>
       <div className="left-sidebar-workspaces">
         {workspaces.map((ws) => (
           <WorkspaceItem

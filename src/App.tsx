@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -12,6 +12,7 @@ import {
   useEdgesState,
   useReactFlow,
 } from "@xyflow/react";
+import { loadWorkspaceData, saveWorkspaceData } from "./persistence";
 import "@xyflow/react/dist/style.css";
 import { FunctionNode } from "./nodes/FunctionNode";
 import Sidebar from "./Sidebar";
@@ -57,15 +58,57 @@ const mainInitialNodes: Node[] = [
 ];
 
 function WorkspaceCanvas({
+  workspaceId,
   initialNodes = [],
   initialEdges = [],
 }: {
+  workspaceId: string;
   initialNodes?: Node[];
   initialEdges?: Edge[];
 }) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const persisted = useMemo(
+    () => loadWorkspaceData(workspaceId),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(
+    persisted?.nodes ?? initialNodes,
+  );
+  const [edges, setEdges, onEdgesChange] = useEdgesState(
+    persisted?.edges ?? initialEdges,
+  );
+
+  const { autosave, saveGeneration } = useWorkspace();
+
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!autosave) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveWorkspaceData(workspaceId, { nodes, edges });
+    }, 400);
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
+  }, [nodes, edges, workspaceId, autosave]);
+
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+  nodesRef.current = nodes;
+  edgesRef.current = edges;
+
+  useEffect(() => {
+    if (saveGeneration === 0) return;
+    saveWorkspaceData(workspaceId, {
+      nodes: nodesRef.current,
+      edges: edgesRef.current,
+    });
+  }, [saveGeneration, workspaceId]);
+
   const {
     screenToFlowPosition,
     getIntersectingNodes,
@@ -236,7 +279,13 @@ function WorkspaceArea() {
           className={`workspace-panel${ws.id !== activeId ? " hidden" : ""}`}
         >
           <ReactFlowProvider>
-            <WorkspaceCanvas initialNodes={ws.isMain ? mainInitialNodes : []} />
+            <WorkspaceCanvas
+              workspaceId={ws.id}
+              initialNodes={
+                ws.isMain ? mainInitialNodes : (ws.initialNodes ?? [])
+              }
+              initialEdges={ws.initialEdges ?? []}
+            />
           </ReactFlowProvider>
         </div>
       ))}

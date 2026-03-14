@@ -30,6 +30,63 @@ body {
   flex-shrink: 0;
 }
 
+.left-sidebar-persist {
+  display: flex;
+  gap: 6px;
+  padding: 8px 8px 0;
+  flex-shrink: 0;
+}
+
+.autosave-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.autosave-toggle input {
+  margin: 0;
+  accent-color: #6ee7b7;
+}
+
+.persist-btn {
+  flex: 1;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.persist-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.save-btn.flashed {
+  color: #6ee7b7;
+  border-color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.1);
+}
+
+.reset-btn:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
 .left-sidebar-workspaces {
   flex: 1;
   overflow-y: auto;
