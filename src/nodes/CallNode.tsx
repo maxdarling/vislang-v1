@@ -50,9 +50,8 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
 
   const selectedFunctionNodeId = data?.functionNodeId;
 
-  // namespace is keyed by nodeId → name, so direct lookup
   const selectedFunctionName = selectedFunctionNodeId
-    ? namespace[selectedFunctionNodeId]
+    ? namespace[selectedFunctionNodeId]?.name
     : undefined;
 
   // Collect + sort param nodes belonging to the selected function
@@ -160,9 +159,9 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
           title="Select function"
         >
           <option value="">— select —</option>
-          {namespaceEntries.map(([nodeId, name]) => (
+          {namespaceEntries.map(([nodeId, entry]) => (
             <option key={nodeId} value={nodeId}>
-              {name}
+              {entry.name}
             </option>
           ))}
         </select>

@@ -1,4 +1,4 @@
-# todo
+# v1 todo
 ### features
 - nesting + recursion
   - this is huge. and it'll force me to come up with a better (more general) design.

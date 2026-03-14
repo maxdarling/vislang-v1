@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -13,77 +13,14 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { DataNode } from "./nodes/DataNode";
-import { MulNode } from "./nodes/arith/MulNode";
-import { AddNode } from "./nodes/arith/AddNode";
 import { FunctionNode } from "./nodes/FunctionNode";
-import { CallNode } from "./nodes/CallNode";
-import { DisplayNode } from "./nodes/DisplayNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
 import { FunctionNamespaceProvider } from "./FunctionNamespaceContext";
 import { RuntimeProvider } from "./RuntimeContext";
-import { RuntimeFlow } from "./RuntimeFlow";
 import { reactFlowNodeTypes } from "./nodeRegistry";
-
-const initialNodes: Node[] = [
-  {
-    id: "n1",
-    type: DataNode.type,
-    position: { x: 0, y: 0 },
-    data: { val: 1 },
-  },
-  {
-    id: "n2",
-    type: DataNode.type,
-    position: { x: 0, y: 100 },
-    data: { val: 2 },
-  },
-  {
-    id: "n3",
-    type: MulNode.type,
-    position: { x: 100, y: 50 },
-    data: {},
-  },
-  {
-    id: "n4",
-    type: DataNode.type,
-    position: { x: 100, y: 150 },
-    data: { val: 3 },
-  },
-  {
-    id: "n5",
-    type: AddNode.type,
-    position: { x: 200, y: 100 },
-    data: {},
-  },
-  {
-    id: "n6",
-    type: FunctionNode.type,
-    position: { x: 300, y: -150 },
-    data: {},
-  },
-  {
-    id: "n7",
-    type: CallNode.type,
-    position: { x: 350, y: 100 },
-    data: {},
-  },
-  {
-    id: "n8",
-    type: DisplayNode.type,
-    position: { x: 575, y: 112 },
-    data: {},
-  },
-];
-
-const initialEdges: Edge[] = [
-  { id: "n1-n3", source: "n1", target: "n3" },
-  { id: "n2-n3", source: "n2", target: "n3" },
-  { id: "n3-n5", source: "n3", target: "n5" },
-  { id: "n4-n5", source: "n4", target: "n5" },
-  { id: "n7-n8", source: "n7", target: "n8" },
-];
+import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
+import { LeftSidebar } from "./LeftSidebar";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -110,8 +47,22 @@ function findFunctionAtPosition(
   });
 }
 
-// "drag and drop" flow: a wrapper that includes a drag-and-drop sidebar and a flow instance.
-function DnDFlow() {
+const mainInitialNodes: Node[] = [
+  {
+    id: "main-fn",
+    type: FunctionNode.type,
+    position: { x: 0, y: 0 },
+    data: { name: "main" },
+  },
+];
+
+function WorkspaceCanvas({
+  initialNodes = [],
+  initialEdges = [],
+}: {
+  initialNodes?: Node[];
+  initialEdges?: Edge[];
+}) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -123,7 +74,6 @@ function DnDFlow() {
   } = useReactFlow();
   const [type] = useDnD();
 
-  // Track which FunctionNode is currently highlighted so we only update when it changes.
   const highlightedRef = useRef<string | null>(null);
 
   const setHighlight = useCallback(
@@ -150,7 +100,6 @@ function DnDFlow() {
     [setEdges],
   );
 
-  // --- Canvas node drag: highlight target function ---
   const onNodeDrag = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       if (node.type === FunctionNode.type) {
@@ -166,7 +115,6 @@ function DnDFlow() {
     [getIntersectingNodes, setHighlight, clearHighlight],
   );
 
-  // --- Canvas node drop: adopt into function ---
   const onNodeDragStop = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       clearHighlight();
@@ -198,7 +146,6 @@ function DnDFlow() {
     [getIntersectingNodes, setNodes, clearHighlight],
   );
 
-  // --- Sidebar drag over: highlight target function ---
   const onDragOver = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
@@ -218,7 +165,6 @@ function DnDFlow() {
     clearHighlight();
   }, [clearHighlight]);
 
-  // --- Sidebar drop: create node (possibly as child of function) ---
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
@@ -244,7 +190,7 @@ function DnDFlow() {
               y: position.y - target.position.y,
             }
           : position,
-        data: {}, // nodes should init themselves. node-specific logic here leads to complexity.
+        data: {},
         ...(target && {
           parentId: target.id,
           extent: "parent" as const,
@@ -257,76 +203,63 @@ function DnDFlow() {
   );
 
   return (
-    <div className="dndflow">
-      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={reactFlowNodeTypes}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onNodeDrag={onNodeDrag}
-          onNodeDragStop={onNodeDragStop}
-          fitView
-        >
-          <Background />
-          <Controls />
-        </ReactFlow>
-      </div>
-      <Sidebar />
+    <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={reactFlowNodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onNodeDrag={onNodeDrag}
+        onNodeDragStop={onNodeDragStop}
+        fitView
+      >
+        <Background />
+        <Controls />
+      </ReactFlow>
     </div>
   );
 }
 
-type TabId = "main" | "runtime";
-
-export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("main");
+function WorkspaceArea() {
+  const { workspaces, activeId } = useWorkspace();
 
   return (
-    <RuntimeProvider>
-      <FunctionNamespaceProvider>
-        <DnDProvider>
-          <div className="app-layout">
-            <div className="tab-bar">
-              <button
-                type="button"
-                className={`tab-btn${activeTab === "main" ? " active" : ""}`}
-                onClick={() => setActiveTab("main")}
-              >
-                Main
-              </button>
-              <button
-                type="button"
-                className={`tab-btn${activeTab === "runtime" ? " active" : ""}`}
-                onClick={() => setActiveTab("runtime")}
-              >
-                Runtime
-              </button>
-            </div>
-            <div className="tab-content">
-              <div
-                className={`tab-panel${activeTab !== "main" ? " hidden" : ""}`}
-              >
-                <ReactFlowProvider>
-                  <DnDFlow />
-                </ReactFlowProvider>
-              </div>
-              <div
-                className={`tab-panel${activeTab !== "runtime" ? " hidden" : ""}`}
-              >
-                <ReactFlowProvider>
-                  <RuntimeFlow />
-                </ReactFlowProvider>
+    <div className="workspace-area">
+      {workspaces.map((ws) => (
+        <div
+          key={ws.id}
+          className={`workspace-panel${ws.id !== activeId ? " hidden" : ""}`}
+        >
+          <ReactFlowProvider>
+            <WorkspaceCanvas initialNodes={ws.isMain ? mainInitialNodes : []} />
+          </ReactFlowProvider>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <WorkspaceProvider>
+      <RuntimeProvider>
+        <FunctionNamespaceProvider>
+          <DnDProvider>
+            <div className="app-layout">
+              <LeftSidebar />
+              <div className="dndflow">
+                <WorkspaceArea />
+                <Sidebar />
               </div>
             </div>
-          </div>
-        </DnDProvider>
-      </FunctionNamespaceProvider>
-    </RuntimeProvider>
+          </DnDProvider>
+        </FunctionNamespaceProvider>
+      </RuntimeProvider>
+    </WorkspaceProvider>
   );
 }

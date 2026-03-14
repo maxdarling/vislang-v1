@@ -71,19 +71,28 @@ export function FunctionNode({
     [allNodes, id],
   );
 
-  // Keep the global namespace in sync with this node's name
-  useEffect(() => {
-    const name = data?.name ?? DEFAULT_NAME;
-    register(name, id);
-    return () => {
-      unregister(name, id);
-    };
-  }, [data?.name, id, register, unregister]);
-
   const paramCount = Math.max(
     MIN_PARAMS,
     data?.paramCount ?? DEFAULT_PARAM_COUNT,
   );
+
+  const paramNames = useMemo(
+    () =>
+      Array.from({ length: paramCount }, (_, i) => {
+        const paramNode = allNodes.find((n) => n.id === getParamNodeId(id, i));
+        return (paramNode?.data as { name?: string })?.name ?? `p${i}`;
+      }),
+    [allNodes, id, paramCount],
+  );
+
+  // Keep the global namespace in sync with this node's name, param count, and param names
+  useEffect(() => {
+    const name = data?.name ?? DEFAULT_NAME;
+    register(name, id, paramCount, paramNames);
+    return () => {
+      unregister(name, id);
+    };
+  }, [data?.name, id, paramCount, paramNames, register, unregister]);
 
   // Spawn child ReturnNode and initial ParamNodes on mount
   useEffect(() => {
