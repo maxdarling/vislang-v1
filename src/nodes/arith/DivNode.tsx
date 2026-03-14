@@ -1,19 +1,10 @@
 import { type NodeProps, type Node } from "@xyflow/react";
 import { ArithNode } from "./ArithNode";
 
-type DivNodeData = { val: number };
-type DivNodeType = Node<DivNodeData, "div">;
+type DivNodeType = Node<Record<string, never>, "div">;
 
 export function DivNode(props: NodeProps<DivNodeType>) {
-  return (
-    <ArithNode
-      {...props}
-      label="÷"
-      reducer={(acc, curr) => (curr !== 0 ? acc / curr : acc)}
-      initialValue={1}
-      nodeType="div"
-    />
-  );
+  return <ArithNode {...props} label="÷" nodeType="div" />;
 }
 
 DivNode.type = "div" as const;

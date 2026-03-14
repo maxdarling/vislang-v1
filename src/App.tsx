@@ -18,7 +18,6 @@ import { FunctionNode } from "./nodes/FunctionNode";
 import Sidebar from "./Sidebar";
 import { useDnD, DnDProvider } from "./DnDContext";
 import { FunctionNamespaceProvider } from "./FunctionNamespaceContext";
-import { RuntimeProvider } from "./RuntimeContext";
 import { reactFlowNodeTypes } from "./nodeRegistry";
 import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
 import { LeftSidebar } from "./LeftSidebar";
@@ -296,19 +295,17 @@ function WorkspaceArea() {
 export default function App() {
   return (
     <WorkspaceProvider>
-      <RuntimeProvider>
-        <FunctionNamespaceProvider>
-          <DnDProvider>
-            <div className="app-layout">
-              <LeftSidebar />
-              <div className="dndflow">
-                <WorkspaceArea />
-                <Sidebar />
-              </div>
+      <FunctionNamespaceProvider>
+        <DnDProvider>
+          <div className="app-layout">
+            <LeftSidebar />
+            <div className="dndflow">
+              <WorkspaceArea />
+              <Sidebar />
             </div>
-          </DnDProvider>
-        </FunctionNamespaceProvider>
-      </RuntimeProvider>
+          </div>
+        </DnDProvider>
+      </FunctionNamespaceProvider>
     </WorkspaceProvider>
   );
 }

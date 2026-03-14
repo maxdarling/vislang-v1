@@ -7,11 +7,8 @@ import {
   useReactFlow,
   useNodes,
   useUpdateNodeInternals,
-  useNodeConnections,
-  useNodesData,
 } from "@xyflow/react";
 import { useFunctionNamespace } from "../FunctionNamespaceContext";
-import { useRuntime } from "../RuntimeContext";
 import { ParamNode } from "./ParamNode";
 import CustomHandle from "../handles/CustomHandle";
 
@@ -42,10 +39,9 @@ function getParamHandleTop(index: number): number {
 }
 
 export function CallNode({ id, data }: NodeProps<CallNodeType>) {
-  const { updateNodeData, getNodes, getEdges, setEdges } = useReactFlow();
+  const { updateNodeData, setEdges } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const { namespace } = useFunctionNamespace();
-  const { invoke, returnValues } = useRuntime();
   const allNodes = useNodes();
 
   const selectedFunctionNodeId = data?.functionNodeId;
@@ -90,54 +86,6 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
     }
   }, [id, params.length, updateNodeInternals, setEdges]);
 
-  // --- Arg values from connections ---
-  const inConnections = useNodeConnections({ handleType: "target" });
-  const sourceNodeIds = useMemo(
-    () => inConnections.map((c) => c.source),
-    [inConnections],
-  );
-  const sourceNodesData = useNodesData(sourceNodeIds);
-
-  // --- Return value propagation ---
-  const returnValue = selectedFunctionNodeId
-    ? returnValues[selectedFunctionNodeId]
-    : undefined;
-
-  useEffect(() => {
-    updateNodeData(id, { val: returnValue });
-  }, [id, returnValue, updateNodeData]);
-
-  // --- Run ---
-  const onRun = useCallback(() => {
-    if (!selectedFunctionNodeId) return;
-
-    const args: Record<number, number> = {};
-    for (const conn of inConnections) {
-      const handleId = conn.targetHandle;
-      if (!handleId) continue;
-      const paramIndex = parseInt(handleId.split("-")[1] ?? "0", 10);
-      const sourceData = sourceNodesData.find((d) => d.id === conn.source);
-      const val = (sourceData?.data as { val?: number })?.val;
-      if (val !== undefined) {
-        args[paramIndex] = val;
-      }
-    }
-
-    invoke({
-      functionNodeId: selectedFunctionNodeId,
-      args,
-      sourceNodes: getNodes(),
-      sourceEdges: getEdges(),
-    });
-  }, [
-    selectedFunctionNodeId,
-    inConnections,
-    sourceNodesData,
-    invoke,
-    getNodes,
-    getEdges,
-  ]);
-
   const onFunctionSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       updateNodeData(id, { functionNodeId: e.target.value || undefined });
@@ -165,15 +113,6 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          className="call-node-run-btn nodrag"
-          onClick={onRun}
-          disabled={!selectedFunctionNodeId}
-          title="Run function"
-        >
-          ▶
-        </button>
       </div>
 
       {/* Body: param labels + return value */}

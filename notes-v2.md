@@ -16,10 +16,12 @@ impl steps:
 
 
 bug:
-- deleting a call node in one workspace deletes all other callnodes in all other workspaces. wtf?
+- weird stuff happening with call nodes. deleting a node in a workspace deletes all other nodes. as one example. it's very odd.
 
 ### optional:
 - cleanup: rip out the computation guts
+  - benefit: we can then add types, e.g. boolean and string, yay!
+    - then we should go implement boolean operators first thing.
   - basic: node internal computation (arith nodes, disp node, if node)
   - funcs
     - no runtime stuff at all (funcall, func)
