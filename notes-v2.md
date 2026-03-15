@@ -30,7 +30,7 @@ bug:
   - variables can have same name
   - main function can be renamed
   - param names allow any string. this ok?
-  - ...
+  - don't allow connections between nodes in function defs and nodes outside
 
 ### persistence
 - desired behavior: the state of all workspaces should be persisted across refreshes.

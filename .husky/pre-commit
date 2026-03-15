@@ -1,1 +1,1 @@
-npx lint-staged
+npm run validate -- $(git diff --cached --name-only --diff-filter=ACMR)
