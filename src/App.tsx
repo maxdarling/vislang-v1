@@ -21,9 +21,7 @@ import { FunctionNamespaceProvider } from "./FunctionNamespaceContext";
 import { reactFlowNodeTypes } from "./nodeRegistry";
 import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
 import { LeftSidebar } from "./LeftSidebar";
-
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `n_${Math.random().toString(36).slice(2, 8)}`;
 
 /**
  * Find the first FunctionNode whose bounding box contains the given flow-coordinate

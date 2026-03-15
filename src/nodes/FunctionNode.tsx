@@ -14,7 +14,7 @@ import { ReturnNode } from "./ReturnNode";
 import { getCssVar } from "../utils";
 import { useFunctionNamespace } from "../FunctionNamespaceContext";
 
-const MIN_PARAMS = 1; // todo: should be 0
+const MIN_PARAMS = 0;
 const DEFAULT_PARAM_COUNT = 1;
 
 // Dimensions from CSS variables (source of truth in index.css :root)

@@ -1,18 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   Handle,
   Position,
   type NodeProps,
   type Node,
   useReactFlow,
-  useNodes,
   useUpdateNodeInternals,
 } from "@xyflow/react";
 import { useFunctionNamespace } from "../FunctionNamespaceContext";
-import { ParamNode } from "./ParamNode";
 import CustomHandle from "../handles/CustomHandle";
 
-type CallNodeData = { functionNodeId?: string; val?: number };
+type CallNodeData = { functionNodeId?: string };
 type CallNodeType = Node<CallNodeData, "call">;
 
 // Layout constants (pixels)
@@ -42,49 +40,36 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
   const { updateNodeData, setEdges } = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const { namespace } = useFunctionNamespace();
-  const allNodes = useNodes();
 
   const selectedFunctionNodeId = data?.functionNodeId;
 
-  const selectedFunctionName = selectedFunctionNodeId
-    ? namespace[selectedFunctionNodeId]?.name
+  const fnEntry = selectedFunctionNodeId
+    ? namespace[selectedFunctionNodeId]
     : undefined;
-
-  // Collect + sort param nodes belonging to the selected function
-  const params = useMemo(() => {
-    if (!selectedFunctionNodeId) return [];
-    return allNodes
-      .filter(
-        (n) =>
-          n.parentId === selectedFunctionNodeId && n.type === ParamNode.type,
-      )
-      .sort((a, b) => {
-        const idxA = parseInt(a.id.split("-param-")[1] ?? "0", 10);
-        const idxB = parseInt(b.id.split("-param-")[1] ?? "0", 10);
-        return idxA - idxB;
-      });
-  }, [allNodes, selectedFunctionNodeId]);
+  const selectedFunctionName = fnEntry?.name;
+  const paramNames = fnEntry?.paramNames ?? [];
+  const paramCount = paramNames.length;
 
   // We must notify React Flow when dynamically changing handles.
   // Subtlety: Don't do this on mount, or else it messes with the view.
   const prevParamsLength = useRef<number | null>(null);
   useEffect(() => {
     const prev = prevParamsLength.current;
-    prevParamsLength.current = params.length;
-    if (prev === null || prev === params.length) return;
+    prevParamsLength.current = paramCount;
+    if (prev === null || prev === paramCount) return;
     updateNodeInternals(id);
 
     // Remove edges targeting handles that no longer exist
-    if (params.length < (prev ?? 0)) {
+    if (paramCount < (prev ?? 0)) {
       setEdges((edges) =>
         edges.filter((e) => {
           if (e.target !== id || !e.targetHandle) return true;
           const idx = parseInt(e.targetHandle.split("-")[1] ?? "0", 10);
-          return idx < params.length;
+          return idx < paramCount;
         }),
       );
     }
-  }, [id, params.length, updateNodeInternals, setEdges]);
+  }, [id, paramCount, updateNodeInternals, setEdges]);
 
   const onFunctionSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -94,7 +79,7 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
   );
 
   const namespaceEntries = Object.entries(namespace);
-  const nodeHeight = getCallNodeHeight(params.length);
+  const nodeHeight = getCallNodeHeight(paramCount);
 
   return (
     <div className="call-node" style={{ height: nodeHeight }}>
@@ -117,26 +102,21 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
 
       {/* Body: param labels + return value */}
       <div className="call-node-body">
-        {params.length === 0 ? (
+        {paramCount === 0 ? (
           <div className="call-node-empty">
             {selectedFunctionName ? "no params" : "no func"}
           </div>
         ) : (
-          params.map((paramNode, index) => (
-            <div key={paramNode.id} className="call-node-param-row">
-              <span className="call-node-param-label">
-                {(paramNode.data as { name?: string })?.name ?? `p${index}`}
-              </span>
+          paramNames.map((name, index) => (
+            <div key={index} className="call-node-param-row">
+              <span className="call-node-param-label">{name}</span>
             </div>
           ))
-        )}
-        {data?.val !== undefined && (
-          <div className="call-node-return-display">→ {data.val}</div>
         )}
       </div>
 
       {/* One input handle per param, aligned with its label row */}
-      {params.map((_, index) => (
+      {paramNames.map((_, index) => (
         <CustomHandle
           key={`param-${index}`}
           type="target"
