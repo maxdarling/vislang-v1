@@ -24,7 +24,6 @@ export default function Sidebar() {
     "arith",
     "logic",
     "function",
-    "other",
   ];
 
   return (

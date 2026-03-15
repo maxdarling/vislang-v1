@@ -4,7 +4,6 @@ import { MulNode } from "./nodes/arith/MulNode";
 import { AddNode } from "./nodes/arith/AddNode";
 import { FunctionNode } from "./nodes/FunctionNode";
 import { CallNode } from "./nodes/CallNode";
-import { DisplayNode } from "./nodes/DisplayNode";
 
 export const exampleNodes: Node[] = [
   {
@@ -49,12 +48,6 @@ export const exampleNodes: Node[] = [
     position: { x: 350, y: 100 },
     data: {},
   },
-  {
-    id: "n8",
-    type: DisplayNode.type,
-    position: { x: 575, y: 112 },
-    data: {},
-  },
 ];
 
 export const exampleEdges: Edge[] = [
@@ -62,5 +55,4 @@ export const exampleEdges: Edge[] = [
   { id: "n2-n3", source: "n2", target: "n3" },
   { id: "n3-n5", source: "n3", target: "n5" },
   { id: "n4-n5", source: "n4", target: "n5" },
-  { id: "n7-n8", source: "n7", target: "n8" },
 ];

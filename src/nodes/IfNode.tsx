@@ -1,17 +1,5 @@
-import { useEffect, useMemo } from "react";
-import {
-  Handle,
-  Position,
-  useNodeConnections,
-  useNodesData,
-  useReactFlow,
-  type NodeProps,
-  type Node,
-} from "@xyflow/react";
+import { Handle, Position } from "@xyflow/react";
 import CustomHandle from "../handles/CustomHandle";
-
-type IfNodeData = { val?: number };
-type IfNodeType = Node<IfNodeData, "if">;
 
 const INPUTS = [
   { id: "p", label: "p" },
@@ -27,29 +15,7 @@ function getHandleTop(index: number): number {
   return PADDING_V + index * ROW_HEIGHT + ROW_HEIGHT / 2;
 }
 
-export function IfNode({ id }: NodeProps<IfNodeType>) {
-  const { updateNodeData } = useReactFlow();
-
-  const pConns = useNodeConnections({ handleType: "target", handleId: "p" });
-  const aConns = useNodeConnections({ handleType: "target", handleId: "a" });
-  const bConns = useNodeConnections({ handleType: "target", handleId: "b" });
-
-  const pData = useNodesData(pConns[0]?.source ? [pConns[0].source] : []);
-  const aData = useNodesData(aConns[0]?.source ? [aConns[0].source] : []);
-  const bData = useNodesData(bConns[0]?.source ? [bConns[0].source] : []);
-
-  const value = useMemo(() => {
-    const p = (pData[0]?.data as { val?: number })?.val;
-    const a = (aData[0]?.data as { val?: number })?.val;
-    const b = (bData[0]?.data as { val?: number })?.val;
-    if (p === undefined) return undefined;
-    return p !== 0 ? a : b;
-  }, [pData, aData, bData]);
-
-  useEffect(() => {
-    updateNodeData(id, { val: value });
-  }, [id, value, updateNodeData]);
-
+export function IfNode() {
   return (
     <div className="if-node" style={{ height: NODE_HEIGHT }}>
       <div className="if-node-inputs">
@@ -63,7 +29,6 @@ export function IfNode({ id }: NodeProps<IfNodeType>) {
           </div>
         ))}
       </div>
-      <div className="if-node-value">{value !== undefined ? value : "—"}</div>
 
       {INPUTS.map((input, i) => (
         <CustomHandle

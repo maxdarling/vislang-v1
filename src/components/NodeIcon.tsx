@@ -5,7 +5,6 @@ import { MulNode } from "../nodes/arith/MulNode";
 import { DivNode } from "../nodes/arith/DivNode";
 import { DataNode } from "../nodes/DataNode";
 import { ParamNode } from "../nodes/ParamNode";
-import { DisplayNode } from "../nodes/DisplayNode";
 import { ReturnNode } from "../nodes/ReturnNode";
 import { FunctionNode } from "../nodes/FunctionNode";
 import { CallNode } from "../nodes/CallNode";
@@ -120,30 +119,6 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             strokeLinecap="round"
           />
           <circle cx="25" cy="35" r="3" fill="white" />
-        </svg>
-      );
-
-    case DisplayNode.type:
-      // Rounded square with DISP text
-      return (
-        <svg
-          width={size}
-          height={size}
-          viewBox={viewBox}
-          className={`node-icon node-icon-${type}`}
-        >
-          <rect x="0" y="0" width="50" height="50" rx={borderRadius} />
-          <text
-            x="25"
-            y="25"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="white"
-            fontSize="10"
-            fontWeight="bold"
-          >
-            DISP
-          </text>
         </svg>
       );
 

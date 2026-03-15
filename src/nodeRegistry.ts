@@ -4,7 +4,6 @@ import { MulNode } from "./nodes/arith/MulNode";
 import { DivNode } from "./nodes/arith/DivNode";
 import { DataNode } from "./nodes/DataNode";
 import { ParamNode } from "./nodes/ParamNode";
-import { DisplayNode } from "./nodes/DisplayNode";
 import { ReturnNode } from "./nodes/ReturnNode";
 import { FunctionNode } from "./nodes/FunctionNode";
 import { CallNode } from "./nodes/CallNode";
@@ -17,7 +16,6 @@ export const nodeTypesByCategory = {
   arith: [AddNode, SubNode, MulNode, DivNode],
   logic: [IfNode],
   function: [FunctionNode, ParamNode, ReturnNode, CallNode],
-  other: [DisplayNode],
 } as const;
 
 export const nodeTypes = [
@@ -26,7 +24,6 @@ export const nodeTypes = [
   ...nodeTypesByCategory.arith,
   ...nodeTypesByCategory.logic,
   ...nodeTypesByCategory.function,
-  ...nodeTypesByCategory.other,
 ] as const;
 
 // magic format for Flow. ignore. defined outside component to prevent re-render.
