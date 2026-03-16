@@ -69,7 +69,15 @@ export function saveAutosave(enabled: boolean): void {
 export function loadWorkspaceData(id: string): PersistedWorkspaceData | null {
   try {
     const raw = localStorage.getItem(`${PREFIX}ws_${id}`);
-    return raw ? (JSON.parse(raw) as PersistedWorkspaceData) : null;
+    if (!raw) return null;
+    const data = JSON.parse(raw) as PersistedWorkspaceData;
+    // Migrate legacy "data" node type to "number"
+    if (data.nodes) {
+      data.nodes = data.nodes.map((n) =>
+        n.type === "data" ? { ...n, type: "number" } : n,
+      );
+    }
+    return data;
   } catch {
     return null;
   }

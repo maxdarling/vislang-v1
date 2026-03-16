@@ -1,5 +1,5 @@
 import type { Node, Edge } from "@xyflow/react";
-import { DataNode } from "./nodes/DataNode";
+import { NumberNode } from "./nodes/NumberNode";
 import { MulNode } from "./nodes/arith/MulNode";
 import { AddNode } from "./nodes/arith/AddNode";
 import { FunctionNode } from "./nodes/FunctionNode";
@@ -8,13 +8,13 @@ import { CallNode } from "./nodes/CallNode";
 export const exampleNodes: Node[] = [
   {
     id: "n1",
-    type: DataNode.type,
+    type: NumberNode.type,
     position: { x: 0, y: 0 },
     data: { val: 1 },
   },
   {
     id: "n2",
-    type: DataNode.type,
+    type: NumberNode.type,
     position: { x: 0, y: 100 },
     data: { val: 2 },
   },
@@ -26,7 +26,7 @@ export const exampleNodes: Node[] = [
   },
   {
     id: "n4",
-    type: DataNode.type,
+    type: NumberNode.type,
     position: { x: 100, y: 150 },
     data: { val: 3 },
   },

@@ -3,12 +3,20 @@ import { AddNode } from "../nodes/arith/AddNode";
 import { SubNode } from "../nodes/arith/SubNode";
 import { MulNode } from "../nodes/arith/MulNode";
 import { DivNode } from "../nodes/arith/DivNode";
-import { DataNode } from "../nodes/DataNode";
+import { NumberNode } from "../nodes/NumberNode";
+import { TrueNode } from "../nodes/literals/TrueNode";
+import { FalseNode } from "../nodes/literals/FalseNode";
 import { ParamNode } from "../nodes/ParamNode";
 import { ReturnNode } from "../nodes/ReturnNode";
 import { FunctionNode } from "../nodes/FunctionNode";
 import { CallNode } from "../nodes/CallNode";
 import { IfNode } from "../nodes/IfNode";
+import { LtNode } from "../nodes/logic/LtNode";
+import { GtNode } from "../nodes/logic/GtNode";
+import { EqualNode } from "../nodes/logic/EqualNode";
+import { AndNode } from "../nodes/logic/AndNode";
+import { OrNode } from "../nodes/logic/OrNode";
+import { NotNode } from "../nodes/logic/NotNode";
 
 type NodeIconProps = {
   type: (typeof nodeTypes)[number]["type"];
@@ -20,8 +28,8 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
   const borderRadius = 4; // For rounded rectangles
 
   switch (type) {
-    case DataNode.type:
-      // Circle - matches the circular data node
+    case NumberNode.type:
+      // Circle - matches the circular number node
       return (
         <svg
           width={size}
@@ -39,7 +47,53 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontSize="16"
             fontWeight="bold"
           >
-            {DataNode.defaultVal}
+            {NumberNode.defaultVal}
+          </text>
+        </svg>
+      );
+
+    case TrueNode.type:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect x="0" y="0" width="50" height="50" rx={borderRadius} />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+          >
+            #t
+          </text>
+        </svg>
+      );
+
+    case FalseNode.type:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect x="0" y="0" width="50" height="50" rx={borderRadius} />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+          >
+            #f
           </text>
         </svg>
       );
@@ -223,6 +277,39 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
             fontWeight="bold"
           >
             IF
+          </text>
+        </svg>
+      );
+
+    case LtNode.type:
+    case GtNode.type:
+    case EqualNode.type:
+    case AndNode.type:
+    case OrNode.type:
+    case NotNode.type:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox={viewBox}
+          className={`node-icon node-icon-${type}`}
+        >
+          <rect x="0" y="0" width="50" height="50" rx={borderRadius} />
+          <text
+            x="25"
+            y="25"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="white"
+            fontSize={type === "equal" ? 10 : 14}
+            fontWeight="bold"
+          >
+            {type === "lt" && "<"}
+            {type === "gt" && ">"}
+            {type === "equal" && "eq?"}
+            {type === "and" && "∧"}
+            {type === "or" && "∨"}
+            {type === "not" && "¬"}
           </text>
         </svg>
       );

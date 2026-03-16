@@ -2,25 +2,32 @@ import { AddNode } from "./nodes/arith/AddNode";
 import { SubNode } from "./nodes/arith/SubNode";
 import { MulNode } from "./nodes/arith/MulNode";
 import { DivNode } from "./nodes/arith/DivNode";
-import { DataNode } from "./nodes/DataNode";
+import { NumberNode } from "./nodes/NumberNode";
+import { TrueNode } from "./nodes/literals/TrueNode";
+import { FalseNode } from "./nodes/literals/FalseNode";
 import { ParamNode } from "./nodes/ParamNode";
 import { ReturnNode } from "./nodes/ReturnNode";
 import { FunctionNode } from "./nodes/FunctionNode";
 import { CallNode } from "./nodes/CallNode";
 import { IfNode } from "./nodes/IfNode";
+import { LtNode } from "./nodes/logic/LtNode";
+import { GtNode } from "./nodes/logic/GtNode";
+import { EqualNode } from "./nodes/logic/EqualNode";
+import { AndNode } from "./nodes/logic/AndNode";
+import { OrNode } from "./nodes/logic/OrNode";
+import { NotNode } from "./nodes/logic/NotNode";
 import { withDetachToolbar } from "./components/DetachToolbar";
 
 // master node type list
 export const nodeTypesByCategory = {
-  data: [DataNode],
+  literals: [NumberNode, TrueNode, FalseNode],
   arith: [AddNode, SubNode, MulNode, DivNode],
-  logic: [IfNode],
+  logic: [IfNode, LtNode, GtNode, EqualNode, AndNode, OrNode, NotNode],
   function: [FunctionNode, ParamNode, ReturnNode, CallNode],
 } as const;
 
 export const nodeTypes = [
-  // todo: better name
-  ...nodeTypesByCategory.data,
+  ...nodeTypesByCategory.literals,
   ...nodeTypesByCategory.arith,
   ...nodeTypesByCategory.logic,
   ...nodeTypesByCategory.function,

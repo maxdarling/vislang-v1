@@ -8,10 +8,10 @@ import {
 } from "@xyflow/react";
 import { EditableValue } from "../components/EditableValue";
 
-type DataNodeData = { val: number };
-type DataNodeType = Node<DataNodeData, "data">;
+type NumberNodeData = { val: number };
+type NumberNodeType = Node<NumberNodeData, "number">;
 
-export function DataNode({ id, data }: NodeProps<DataNodeType>) {
+export function NumberNode({ id, data }: NodeProps<NumberNodeType>) {
   const { updateNodeData } = useReactFlow();
 
   const onValueChange = useCallback(
@@ -30,15 +30,15 @@ export function DataNode({ id, data }: NodeProps<DataNodeType>) {
 
   return (
     <>
-      <div className="react-flow__node-default node-data">
+      <div className="react-flow__node-default node-number">
         <EditableValue<number>
-          initialValue={data?.val ?? DataNode.defaultVal}
+          initialValue={data?.val ?? NumberNode.defaultVal}
           onValueChange={onValueChange}
           onInitialSync={onInitialSync}
-          parse={(s) => parseInt(s, 10) || DataNode.defaultVal}
+          parse={(s) => parseInt(s, 10) || NumberNode.defaultVal}
           format={String}
-          defaultDisplay={String(DataNode.defaultVal)}
-          inputAriaLabel="Data value"
+          defaultDisplay={String(NumberNode.defaultVal)}
+          inputAriaLabel="Number value"
         />
       </div>
       <Handle type="source" position={Position.Right} isConnectable={true} />
@@ -46,5 +46,5 @@ export function DataNode({ id, data }: NodeProps<DataNodeType>) {
   );
 }
 
-DataNode.type = "data" as const;
-DataNode.defaultVal = 1 as const;
+NumberNode.type = "number" as const;
+NumberNode.defaultVal = 1 as const;

@@ -2,6 +2,15 @@
 ### MVP: parse the graph
 att 1: scheme
 - a rough version of scheme makes sense. it ~basically is already what we have with arithmetic
+- boolean type
+  - boolean operators: <, >, equal?, and, or, not
+  - #t and #f bool nodes
+  - impl:
+    - make new "literals" section. rename data node to "number".
+    - boolean nodes "true" and "false" nodes, with "#t" and "#f" as labels
+    - boolean operators under the "logic" section
+
+
 - parsing strategy:
   - start in the main function. ret node. and walk backwards.
 - evaluation: give a source string to a library (e.g. biwascheme or LIPS). very simple!
@@ -19,13 +28,6 @@ bug:
 - weird stuff happening with call nodes. deleting a node in a workspace deletes all other nodes. as one example. it's very odd.
 
 ### optional:
-- cleanup: rip out the computation guts
-  - benefit: we can then add types, e.g. boolean and string, yay!
-    - then we should go implement boolean operators first thing.
-  - basic: node internal computation (arith nodes, disp node, if node)
-  - funcs
-    - no runtime stuff at all (funcall, func)
-    - NEED function namespace, though (powers dropdown UI)
 - improve syntax correctness
   - variables can have same name
   - main function can be renamed

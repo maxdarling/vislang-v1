@@ -305,7 +305,9 @@ body {
 /* define at :root level so they're in dnd wrapper and reactflow canvas */
 :root {
   --xy-theme-selected: #f57dbd;
-  --node-color-data: #ff0000;
+  --node-color-number: #ff0000;
+  --node-color-true: #22c55e;
+  --node-color-false: #ef4444;
   --node-color-param: #90ee90;
   --node-color-func: orange;
   --node-color-display: lightblue;
@@ -387,8 +389,26 @@ body {
   display: block;
 }
 
-.node-icon-data circle {
-  fill: var(--node-color-data);
+.node-icon-number circle {
+  fill: var(--node-color-number);
+}
+
+.node-icon-true rect,
+.node-icon-false rect {
+  fill: var(--node-color-true);
+}
+
+.node-icon-false rect {
+  fill: var(--node-color-false);
+}
+
+.node-icon-lt rect,
+.node-icon-gt rect,
+.node-icon-equal rect,
+.node-icon-and rect,
+.node-icon-or rect,
+.node-icon-not rect {
+  fill: var(--node-color-logic);
 }
 
 .node-icon-param rect {
@@ -420,8 +440,8 @@ body {
 }
 
 /* Canvas node styles - source of truth for all node properties */
-.react-flow__node-default.node-data {
-  background-color: var(--node-color-data);
+.react-flow__node-default.node-number {
+  background-color: var(--node-color-number);
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -429,6 +449,45 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+.react-flow__node-default.node-true,
+.react-flow__node-default.node-false {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.react-flow__node-default.node-true {
+  background-color: var(--node-color-true);
+}
+
+.react-flow__node-default.node-false {
+  background-color: var(--node-color-false);
+}
+
+.react-flow__node-default.node-lt,
+.react-flow__node-default.node-gt,
+.react-flow__node-default.node-equal,
+.react-flow__node-default.node-and,
+.react-flow__node-default.node-or,
+.react-flow__node-default.node-not {
+  background-color: var(--node-color-logic);
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .react-flow__node-default.node-param {
@@ -850,16 +909,16 @@ body {
   color: #666;
 }
 
-/* DataNode inner content (input and display) - shared styles */
-.react-flow__node-default.node-data input,
-.react-flow__node-default.node-data .nodrag {
+/* NumberNode inner content (input and display) - shared styles */
+.react-flow__node-default.node-number input,
+.react-flow__node-default.node-number .nodrag {
   width: 35px;
   height: 20px;
   font-size: 12px;
 }
 
-/* DataNode input specific styles */
-.react-flow__node-default.node-data input {
+/* NumberNode input specific styles */
+.react-flow__node-default.node-number input {
   border: none;
   border-radius: 2px;
   padding: 2px 4px;
@@ -867,8 +926,8 @@ body {
   outline: none;
 }
 
-/* DataNode display value specific styles */
-.react-flow__node-default.node-data .nodrag {
+/* NumberNode display value specific styles */
+.react-flow__node-default.node-number .nodrag {
   display: flex;
   align-items: center;
   justify-content: center;
