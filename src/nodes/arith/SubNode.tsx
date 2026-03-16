@@ -1,10 +1,27 @@
-import { type NodeProps, type Node } from "@xyflow/react";
-import { ArithNode } from "./ArithNode";
+import { Handle, Position } from "@xyflow/react";
+import CustomHandle from "../../handles/CustomHandle";
 
-type SubNodeType = Node<Record<string, never>, "sub">;
-
-export function SubNode(props: NodeProps<SubNodeType>) {
-  return <ArithNode {...props} label="-" nodeType="sub" />;
+export function SubNode() {
+  return (
+    <>
+      <CustomHandle
+        type="target"
+        position={Position.Left}
+        id="a"
+        maxConnections={1}
+        style={{ top: "33%" }}
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="rest"
+        isConnectable={true}
+        style={{ top: "67%" }}
+      />
+      <div className="react-flow__node-default node-sub">−</div>
+      <Handle type="source" position={Position.Right} isConnectable={true} />
+    </>
+  );
 }
 
 SubNode.type = "sub" as const;

@@ -35,7 +35,10 @@ export function NumberNode({ id, data }: NodeProps<NumberNodeType>) {
           initialValue={data?.val ?? NumberNode.defaultVal}
           onValueChange={onValueChange}
           onInitialSync={onInitialSync}
-          parse={(s) => parseInt(s, 10) || NumberNode.defaultVal}
+          parse={(s) => {
+            const parsed = parseInt(s, 10);
+            return Number.isNaN(parsed) ? NumberNode.defaultVal : parsed;
+          }}
           format={String}
           defaultDisplay={String(NumberNode.defaultVal)}
           inputAriaLabel="Number value"
