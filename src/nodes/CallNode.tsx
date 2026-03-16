@@ -91,7 +91,7 @@ export function CallNode({ id, data }: NodeProps<CallNodeType>) {
           className="call-node-select nodrag"
           title="Select function"
         >
-          <option value="">— select —</option>
+          <option value=""> ? </option>
           {namespaceEntries.map(([nodeId, entry]) => (
             <option key={nodeId} value={nodeId}>
               {entry.name}

@@ -351,10 +351,6 @@ body {
   max-width: 130px;
 }
 
-.dndflow aside .description {
-  margin-bottom: 10px;
-}
-
 .dndflow aside .node-category {
   margin-bottom: 20px;
   display: flex;
@@ -422,10 +418,6 @@ body {
   fill: var(--node-color-func);
 }
 
-.node-icon-display rect {
-  fill: var(--node-color-display);
-}
-
 .node-icon-return rect {
   fill: var(--node-color-return);
 }
@@ -442,8 +434,8 @@ body {
 /* Canvas node styles - source of truth for all node properties */
 .react-flow__node-default.node-number {
   background-color: var(--node-color-number);
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -477,7 +469,8 @@ body {
 .react-flow__node-default.node-equal,
 .react-flow__node-default.node-and,
 .react-flow__node-default.node-or,
-.react-flow__node-default.node-not {
+.react-flow__node-default.node-not,
+.react-flow__node-default.node-if {
   background-color: var(--node-color-logic);
   width: 50px;
   height: 50px;
@@ -487,7 +480,6 @@ body {
   justify-content: center;
   padding: 0;
   font-size: 14px;
-  font-weight: bold;
 }
 
 .react-flow__node-default.node-param {
@@ -542,66 +534,6 @@ body {
   padding: 0;
 }
 
-.react-flow__node-default.node-display {
-  background-color: var(--node-color-display);
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-/* ── If node ──────────────────────────────────────────────────────────── */
-
-.react-flow__node-if {
-  width: 100px;
-}
-
-.if-node {
-  width: 100px;
-  background: var(--node-color-logic);
-  border: 1.5px solid #c47a4a;
-  border-radius: 6px;
-  font-size: 12px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: stretch;
-  overflow: hidden;
-}
-
-.if-node-inputs {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6px 0 6px 14px;
-  flex: 1;
-}
-
-.if-node-row {
-  display: flex;
-  align-items: center;
-}
-
-.if-node-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #5a3a1a;
-}
-
-.if-node-value {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #3a2210;
-  border-left: 1px solid #c47a4a;
-  min-width: 32px;
-}
-
 .react-flow__node-default.node-return {
   background-color: var(--node-color-return);
   width: var(--return-node-size);
@@ -612,7 +544,6 @@ body {
   justify-content: center;
   padding: 0;
   font-size: 12px;
-  font-weight: bold;
 }
 
 /* Function node: name sits just above the top edge of the box */
@@ -728,11 +659,11 @@ body {
 /* ── Call node ─────────────────────────────────────────────────────────── */
 
 .react-flow__node-call {
-  width: 140px;
+  width: 100px;
 }
 
 .call-node {
-  width: 140px;
+  width: 100px;
   background: #1a1a2e;
   border: 1.5px solid #4a4a8a;
   border-radius: 6px;
@@ -795,78 +726,11 @@ body {
   font-size: 11px;
 }
 
-.call-node-run-btn {
-  padding: 2px 6px;
-  background: #0f3460;
-  border: 1px solid #4a4a8a;
-  border-radius: 3px;
-  color: #7fdbca;
-  font-size: 11px;
-  cursor: pointer;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.call-node-run-btn:hover:not(:disabled) {
-  background: #1a4a7a;
-  border-color: var(--xy-theme-selected);
-}
-
-.call-node-run-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.call-node-return-display {
-  height: 24px;
-  display: flex;
-  align-items: center;
-  color: #7fdbca;
-  font-size: 11px;
-  font-weight: 600;
-  border-top: 1px solid #4a4a8a;
-  margin-top: 4px;
-  padding-top: 4px;
-}
-
 /* sidebar icon */
 .node-icon-call rect {
   fill: #1a1a2e;
   stroke: #4a4a8a;
   stroke-width: 2;
-}
-
-/* ── Call instance node (runtime container) ────────────────────────────── */
-
-/* Dimensions set via inline style on the node object */
-.call-instance-node-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.call-instance-node-header {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 100%;
-  margin-bottom: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #4a90d9;
-  white-space: nowrap;
-}
-
-.node-call-instance {
-  border: 2px dashed #4a90d9;
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
-  background-color: rgba(74, 144, 217, 0.04);
-  box-sizing: border-box;
 }
 
 /* ── Function node - initial dimensions ───────────────────────────────── */
@@ -895,25 +759,11 @@ body {
   border: 3px solid red;
 }
 
-.react-flow__node-default.node-function .function-label {
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.react-flow__node-default.node-function .function-count {
-  font-size: 24px;
-}
-
-.react-flow__node-default.node-function .function-unit {
-  font-size: 12px;
-  color: #666;
-}
-
 /* NumberNode inner content (input and display) - shared styles */
 .react-flow__node-default.node-number input,
 .react-flow__node-default.node-number .nodrag {
-  width: 35px;
-  height: 20px;
+  width: 20px;
+  height: 15px;
   font-size: 12px;
 }
 
