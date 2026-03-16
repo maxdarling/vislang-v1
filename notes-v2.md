@@ -1,31 +1,25 @@
 # todo
-### MVP: parse the graph
-att 1: scheme
-- a rough version of scheme makes sense. it ~basically is already what we have with arithmetic
-- boolean type
-  - boolean operators: <, >, equal?, and, or, not
-  - #t and #f bool nodes
-  - impl:
-    - make new "literals" section. rename data node to "number".
-    - boolean nodes "true" and "false" nodes, with "#t" and "#f" as labels
-    - boolean operators under the "logic" section
-
-
+### MVP: parsing (scheme)
+- goal: parse the graph as scheme
+- why: the languages is already a subset of scheme!
+  - this makes eval trivial via a library (e.g. biwascheme or LIPS)
 - parsing strategy:
   - start in the main function. ret node. and walk backwards.
-- evaluation: give a source string to a library (e.g. biwascheme or LIPS). very simple!
+  - anything not connected is not used. discard.
+  - this is an AST! from which we translate to scheme code 1:1
+- impl stages:
+  - 0. [DONE] cleanups: persistence, bugfixes, style tweaks
+  - 1. see the graph representation for myself. i think i just need edges and nodes (id, type, name)
+  - 2. write a graph traversal alg (which is the parser)
+    - for each workspace, for all function defs:
+      - parse the function def:
+        - (start at return node. special: it emits its parent value or nil)
+        - recursive descent via parsed(node) =
+          - if node is literal: emit literal, stop
+          - if node is function call: emit `(<node_fun> " ".join(parent_nodes.map(parse))`
+            - read: "to parse the funcall graph (a tree) to scheme, call the root node function `(root_node_fun...` and use as args the recursive result of each child"
+    - final step: generate `(main arg1 ... argN)` at end of file
 
-impl steps:
-- for fast iteration, i need a workspace that i'll develop in (e.g. fibonacci)
-  - put example 1 in a workspace
-  - [TRY TO GET AWAY WITH NO PERSISTENCE YET, AND JUST DO "INITIAL NODES"]
-  - [REALIZE IT'S TOO HARD OTHERWISE, AND GO IMPL THAT]
-- see the graph representation for myself. i think i just need edges and nodes (id, type, name)
-
-
-
-bug:
-- weird stuff happening with call nodes. deleting a node in a workspace deletes all other nodes. as one example. it's very odd.
 
 ### optional:
 - improve syntax correctness
@@ -33,7 +27,3 @@ bug:
   - main function can be renamed
   - param names allow any string. this ok?
   - don't allow connections between nodes in function defs and nodes outside
-
-### persistence
-- desired behavior: the state of all workspaces should be persisted across refreshes.
-- simple mvp: on node/edge creation or dragstop (are there others?), save the current state (nodes, edges, node positions, node values). save to local storage. have "save" and "reset" buttons. top of left sidebar.
