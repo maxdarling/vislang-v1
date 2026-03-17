@@ -70,7 +70,7 @@ function formatSExpr(expr: SExpr, indent: number, maxWidth: number): string {
   );
 }
 
-export function prettifyScheme(code: string, maxWidth = 80): string {
+export function prettifyScheme(code: string, maxWidth = 40): string {
   const tokens = tokenize(code);
   const pos = { i: 0 };
   const exprs: SExpr[] = [];

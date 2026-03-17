@@ -21,13 +21,29 @@ body {
 /* ── Left sidebar (workspace navigator + run area) ────────────────────── */
 
 .left-sidebar {
-  width: 160px;
   background: grey;
   border-right: 1px solid #555;
   display: flex;
   flex-direction: column;
   font-size: 13px;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle:active {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .left-sidebar-persist {
@@ -202,7 +218,8 @@ body {
 .left-sidebar-run {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px 8px;
-  overflow: hidden;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .run-header {
@@ -242,6 +259,55 @@ body {
 
 .run-param-input:focus {
   border-color: var(--xy-theme-selected);
+}
+
+.compile-btn {
+  width: 100%;
+  padding: 5px 0;
+  border: 1px solid rgba(110, 231, 183, 0.4);
+  border-radius: 3px;
+  background: rgba(110, 231, 183, 0.08);
+  color: #6ee7b7;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.compile-btn:hover {
+  background: rgba(110, 231, 183, 0.18);
+  border-color: rgba(110, 231, 183, 0.7);
+}
+
+.scheme-label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  margin: 8px 0 3px;
+}
+
+.compiled-code {
+  margin: 0 0 8px;
+  padding: 6px 7px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #a8f0d8;
+  white-space: pre;
+  overflow: auto;
+  min-height: 48px;
+  max-height: 180px;
+  scrollbar-width: none;
+}
+
+.compiled-code::-webkit-scrollbar {
+  display: none;
 }
 
 .run-btn {

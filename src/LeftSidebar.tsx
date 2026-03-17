@@ -1,4 +1,10 @@
-import { useMemo, useState, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import { useWorkspace, type Workspace } from "./WorkspaceContext";
 import { useFunctionNamespace } from "./FunctionNamespaceContext";
 import { clearAllPersistedData } from "./persistence";
@@ -111,13 +117,50 @@ export function LeftSidebar() {
   const mainParamNames = mainFunction?.paramNames ?? [];
 
   const [paramValues, setParamValues] = useState<Record<number, string>>({});
+  const [compiledCode, setCompiledCode] = useState<string | null>(null);
   const [runOutput, setRunOutput] = useState<string | null>(null);
 
-  const handleRun = useCallback(() => {
-    const programString = parse();
-    console.log("Program string:\n" + prettifyScheme(programString));
-    // todo: pass args and evaluate
+  const [sidebarWidth, setSidebarWidth] = useState(260);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(0);
 
+  const onResizeMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      isDragging.current = true;
+      dragStartX.current = e.clientX;
+      dragStartWidth.current = sidebarWidth;
+      e.preventDefault();
+    },
+    [sidebarWidth],
+  );
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const delta = e.clientX - dragStartX.current;
+      setSidebarWidth(
+        Math.max(140, Math.min(520, dragStartWidth.current + delta)),
+      );
+    };
+    const onMouseUp = () => {
+      isDragging.current = false;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
+
+  const handleCompile = useCallback(() => {
+    const programString = parse();
+    setCompiledCode(prettifyScheme(programString));
+  }, []);
+
+  const handleRun = useCallback(() => {
+    // todo: pass args and evaluate
     setRunOutput("—");
   }, []);
   const [saveFlash, setSaveFlash] = useState(false);
@@ -138,7 +181,7 @@ export function LeftSidebar() {
   }, []);
 
   return (
-    <div className="left-sidebar">
+    <div className="left-sidebar" style={{ width: sidebarWidth }}>
       <div className="left-sidebar-persist">
         <button
           type="button"
@@ -210,6 +253,12 @@ export function LeftSidebar() {
       </div>
       <div className="left-sidebar-run">
         <div className="run-header">Program</div>
+        <button type="button" className="compile-btn" onClick={handleCompile}>
+          Compile
+        </button>
+        <div className="scheme-label">Scheme</div>
+        <pre className="compiled-code">{compiledCode ?? ""}</pre>
+        <div className="scheme-label">main</div>
         {Array.from({ length: mainParamCount }, (_, i) => (
           <div key={i} className="run-param-row">
             <label className="run-param-label">
@@ -233,6 +282,7 @@ export function LeftSidebar() {
           <span className="run-output-value">{runOutput ?? ""}</span>
         </div>
       </div>
+      <div className="sidebar-resize-handle" onMouseDown={onResizeMouseDown} />
     </div>
   );
 }

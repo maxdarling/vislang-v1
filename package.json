@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "validate": "bash -c 'eslint --no-warn-ignored \"${@:-.}\" && prettier --check --ignore-unknown \"${@:-.}\"' --",
+    "validate": "bash -c 'eslint --no-warn-ignored \"${@:-.}\" && prettier --write --ignore-unknown \"${@:-.}\"' --",
     "prepare": "husky"
   },
   "dependencies": {
