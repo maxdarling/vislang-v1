@@ -1,4 +1,12 @@
 # todo
+### basic UX improvements
+- my current 4 workspaces should be checked into VC. that should be the base point to reset to.
+  - to do this, idk... we could do it via a "download" option. then you might want an "upload" as well? meh, maybe not. 
+
+### bugs
+- param nodes should not be delete-able
+- ...
+
 ### MVP: parsing (scheme)
 - goal: parse the graph as scheme
 - why: the languages is already a subset of scheme!

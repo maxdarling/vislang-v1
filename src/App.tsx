@@ -45,15 +45,6 @@ function findFunctionAtPosition(
   });
 }
 
-const mainInitialNodes: Node[] = [
-  {
-    id: "main-fn",
-    type: FunctionNode.type,
-    position: { x: 0, y: 0 },
-    data: { name: "main" },
-  },
-];
-
 function WorkspaceCanvas({
   workspaceId,
   initialNodes = [],
@@ -285,9 +276,7 @@ function WorkspaceArea() {
           <ReactFlowProvider>
             <WorkspaceCanvas
               workspaceId={ws.id}
-              initialNodes={
-                ws.isMain ? mainInitialNodes : (ws.initialNodes ?? [])
-              }
+              initialNodes={ws.initialNodes ?? []}
               initialEdges={ws.initialEdges ?? []}
             />
           </ReactFlowProvider>

@@ -52,9 +52,10 @@ export function saveActiveId(id: string): void {
 
 export function loadAutosave(): boolean {
   try {
-    return localStorage.getItem(AUTOSAVE_KEY) === "true";
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    return raw === null ? true : raw === "true";
   } catch {
-    return false;
+    return true;
   }
 }
 

@@ -10,6 +10,7 @@ import { useFunctionNamespace } from "./FunctionNamespaceContext";
 import { clearAllPersistedData } from "./persistence";
 import { parse } from "./parse";
 import { prettifyScheme } from "./prettifyScheme";
+import { evaluateScheme } from "./schemeEvaluator";
 
 function WorkspaceItem({
   workspace,
@@ -154,15 +155,44 @@ export function LeftSidebar() {
     };
   }, []);
 
-  const handleCompile = useCallback(() => {
+  const compileProgram = useCallback(() => {
     const programString = parse();
-    setCompiledCode(prettifyScheme(programString));
+    const nextCode = prettifyScheme(programString);
+    setCompiledCode(nextCode);
+    return nextCode;
   }, []);
 
-  const handleRun = useCallback(() => {
-    // todo: pass args and evaluate
-    setRunOutput("—");
-  }, []);
+  const handleCompile = useCallback(() => {
+    try {
+      compileProgram();
+    } catch (e) {
+      setRunOutput(
+        `compile error: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
+  }, [compileProgram]);
+
+  const handleRun = useCallback(async () => {
+    let code: string;
+    try {
+      code = compileProgram();
+    } catch (e) {
+      setRunOutput(
+        `compile error: ${e instanceof Error ? e.message : String(e)}`,
+      );
+      return;
+    }
+    if (!mainFunction) {
+      setRunOutput("no main function");
+      return;
+    }
+    const paramList = Array.from(
+      { length: mainParamCount },
+      (_, i) => paramValues[i] ?? "",
+    );
+    const result = await evaluateScheme(code, paramList);
+    setRunOutput(result.ok ? result.output : `error: ${result.error}`);
+  }, [compileProgram, mainFunction, mainParamCount, paramValues]);
   const [saveFlash, setSaveFlash] = useState(false);
 
   const handleSave = useCallback(() => {
@@ -182,74 +212,77 @@ export function LeftSidebar() {
 
   return (
     <div className="left-sidebar" style={{ width: sidebarWidth }}>
-      <div className="left-sidebar-persist">
-        <button
-          type="button"
-          className={`persist-btn save-btn${saveFlash ? " flashed" : ""}`}
-          onClick={handleSave}
-          title="Save all workspace state now"
-        >
-          {saveFlash ? "Saved!" : "Save"}
-        </button>
-        <button
-          type="button"
-          className="persist-btn reset-btn"
-          onClick={handleReset}
-          title="Clear all saved state and reset to defaults"
-        >
-          Reset
-        </button>
-      </div>
-      <label className="autosave-toggle">
-        <input
-          type="checkbox"
-          checked={autosave}
-          onChange={(e) => setAutosave(e.target.checked)}
-        />
-        <span>autosave</span>
-      </label>
-      <div className="left-sidebar-workspaces">
-        {workspaces.map((ws) => (
-          <WorkspaceItem
-            key={ws.id}
-            workspace={ws}
-            isActive={ws.id === activeId}
-            onClick={() => setActiveId(ws.id)}
-            onRename={(name) => renameWorkspace(ws.id, name)}
-            onDelete={() => removeWorkspace(ws.id)}
-          />
-        ))}
-        <button
-          type="button"
-          className="add-workspace-btn"
-          onClick={addWorkspace}
-          title="Add workspace"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+      <div className="left-sidebar-workspace-section">
+        <div className="left-sidebar-section-label">Workspaces</div>
+        <div className="left-sidebar-persist">
+          <button
+            type="button"
+            className={`persist-btn save-btn${saveFlash ? " flashed" : ""}`}
+            onClick={handleSave}
+            title="Save all workspace state now"
           >
-            <line
-              x1="8"
-              y1="3"
-              x2="8"
-              y2="13"
-              stroke="currentColor"
-              strokeWidth="1.5"
+            {saveFlash ? "Saved!" : "Save"}
+          </button>
+          <button
+            type="button"
+            className="persist-btn reset-btn"
+            onClick={handleReset}
+            title="Clear all saved state and reset to defaults"
+          >
+            Reset
+          </button>
+        </div>
+        <label className="autosave-toggle">
+          <input
+            type="checkbox"
+            checked={autosave}
+            onChange={(e) => setAutosave(e.target.checked)}
+          />
+          <span>Autosave</span>
+        </label>
+        <div className="left-sidebar-workspaces">
+          {workspaces.map((ws) => (
+            <WorkspaceItem
+              key={ws.id}
+              workspace={ws}
+              isActive={ws.id === activeId}
+              onClick={() => setActiveId(ws.id)}
+              onRename={(name) => renameWorkspace(ws.id, name)}
+              onDelete={() => removeWorkspace(ws.id)}
             />
-            <line
-              x1="3"
-              y1="8"
-              x2="13"
-              y2="8"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </button>
+          ))}
+          <button
+            type="button"
+            className="add-workspace-btn"
+            onClick={addWorkspace}
+            title="Add workspace"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                x1="8"
+                y1="3"
+                x2="8"
+                y2="13"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <line
+                x1="3"
+                y1="8"
+                x2="13"
+                y2="8"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       <div className="left-sidebar-run">
         <div className="run-header">Program</div>

@@ -7,7 +7,10 @@ import {
   type ReactNode,
 } from "react";
 import type { Node, Edge } from "@xyflow/react";
-import { exampleNodes, exampleEdges } from "./exampleNodes";
+import {
+  DEFAULT_ACTIVE_WORKSPACE_ID,
+  getDefaultWorkspaces,
+} from "./defaultWorkspaces";
 import {
   loadWorkspaceList,
   saveWorkspaceList,
@@ -48,7 +51,7 @@ const WorkspaceContext = createContext<WorkspaceContextValue>({
   renameWorkspace: () => {},
   removeWorkspace: () => {},
   setParamCount: () => {},
-  autosave: false,
+  autosave: true,
   setAutosave: () => {},
   saveGeneration: 0,
   triggerSave: () => {},
@@ -56,43 +59,36 @@ const WorkspaceContext = createContext<WorkspaceContextValue>({
 
 let wsCounter = 0;
 
-const defaultWorkspaces: Workspace[] = [
-  { id: "main", name: "Main", isMain: true, paramCount: 0 },
-  {
-    id: "example1",
-    name: "Example 1",
-    isMain: false,
-    paramCount: 0,
-    initialNodes: exampleNodes,
-    initialEdges: exampleEdges,
-  },
-];
-
 function initWorkspaces(): Workspace[] {
+  const defaults = getDefaultWorkspaces();
   const persisted = loadWorkspaceList();
   if (persisted) {
+    const persistedById = new Map(persisted.map((ws) => [ws.id, ws]));
     persisted.forEach((ws) => {
       const match = ws.id.match(/^ws_(\d+)$/);
       if (match) wsCounter = Math.max(wsCounter, parseInt(match[1]));
     });
-    return persisted.map((ws) => {
-      if (ws.id === "example1") {
-        return {
-          ...ws,
-          initialNodes: exampleNodes,
-          initialEdges: exampleEdges,
-        };
-      }
-      return ws;
+    const mergedDefaults = defaults.map((workspace) => {
+      const saved = persistedById.get(workspace.id);
+      return saved
+        ? {
+            ...saved,
+            initialNodes: workspace.initialNodes,
+            initialEdges: workspace.initialEdges,
+          }
+        : workspace;
     });
+    const defaultIds = new Set(defaults.map((workspace) => workspace.id));
+    const customWorkspaces = persisted.filter((ws) => !defaultIds.has(ws.id));
+    return [...mergedDefaults, ...customWorkspaces];
   }
-  return defaultWorkspaces;
+  return defaults;
 }
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>(initWorkspaces);
   const [activeId, setActiveIdState] = useState<string>(
-    () => loadActiveId() ?? "example1",
+    () => loadActiveId() ?? DEFAULT_ACTIVE_WORKSPACE_ID,
   );
 
   useEffect(() => {
