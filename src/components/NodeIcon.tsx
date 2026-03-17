@@ -306,10 +306,10 @@ export function NodeIcon({ type, size = 50 }: NodeIconProps) {
           >
             {type === "lt" && "<"}
             {type === "gt" && ">"}
-            {type === "equal" && "eq?"}
-            {type === "and" && "∧"}
-            {type === "or" && "∨"}
-            {type === "not" && "¬"}
+            {type === "equal" && "equal?"}
+            {type === "and" && "and"}
+            {type === "or" && "or"}
+            {type === "not" && "not"}
           </text>
         </svg>
       );

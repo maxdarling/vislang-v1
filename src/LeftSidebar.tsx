@@ -2,6 +2,8 @@ import { useMemo, useState, useCallback } from "react";
 import { useWorkspace, type Workspace } from "./WorkspaceContext";
 import { useFunctionNamespace } from "./FunctionNamespaceContext";
 import { clearAllPersistedData } from "./persistence";
+import { parse } from "./parse";
+import { prettifyScheme } from "./prettifyScheme";
 
 function WorkspaceItem({
   workspace,
@@ -112,10 +114,12 @@ export function LeftSidebar() {
   const [runOutput, setRunOutput] = useState<string | null>(null);
 
   const handleRun = useCallback(() => {
-    // TODO: wire up actual program execution
-    console.log("Run program with params:", paramValues);
+    const programString = parse();
+    console.log("Program string:\n" + prettifyScheme(programString));
+    // todo: pass args and evaluate
+
     setRunOutput("—");
-  }, [paramValues]);
+  }, []);
   const [saveFlash, setSaveFlash] = useState(false);
 
   const handleSave = useCallback(() => {

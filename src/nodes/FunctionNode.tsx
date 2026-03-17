@@ -37,6 +37,11 @@ export function getParamNodeId(functionNodeId: string, index: number) {
   return `${functionNodeId}-param-${index}`;
 }
 
+// Helper to extract the index from a param node ID
+export function getParamNodeIndex(paramNodeId: string): number {
+  return parseInt(paramNodeId.split("-param-")[1] ?? "0", 10);
+}
+
 // Helper to generate the return node ID for a given function node
 export function getReturnNodeId(functionNodeId: string) {
   return `${functionNodeId}-return`;

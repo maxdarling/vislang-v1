@@ -256,6 +256,13 @@ function WorkspaceCanvas({
         onDragLeave={onDragLeave}
         onNodeDrag={onNodeDrag}
         onNodeDragStop={onNodeDragStop}
+        onNodeClick={(_event, node) => {
+          console.log(
+            "[node select]",
+            node.id,
+            (node.data as { name?: string })?.name,
+          );
+        }}
         fitView
       >
         <Background />
