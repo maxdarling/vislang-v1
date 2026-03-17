@@ -59,15 +59,20 @@ const WorkspaceContext = createContext<WorkspaceContextValue>({
 
 let wsCounter = 0;
 
+function syncWorkspaceCounter(workspaces: Pick<Workspace, "id">[]): void {
+  workspaces.forEach((ws) => {
+    const match = ws.id.match(/^ws_(\d+)$/);
+    if (match) wsCounter = Math.max(wsCounter, parseInt(match[1], 10));
+  });
+}
+
 function initWorkspaces(): Workspace[] {
   const defaults = getDefaultWorkspaces();
+  syncWorkspaceCounter(defaults);
   const persisted = loadWorkspaceList();
   if (persisted) {
     const persistedById = new Map(persisted.map((ws) => [ws.id, ws]));
-    persisted.forEach((ws) => {
-      const match = ws.id.match(/^ws_(\d+)$/);
-      if (match) wsCounter = Math.max(wsCounter, parseInt(match[1]));
-    });
+    syncWorkspaceCounter(persisted);
     const mergedDefaults = defaults.map((workspace) => {
       const saved = persistedById.get(workspace.id);
       return saved

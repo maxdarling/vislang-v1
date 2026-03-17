@@ -1,5 +1,5 @@
 import type { Node, Edge } from "@xyflow/react";
-import { FunctionNode } from "./nodes/FunctionNode";
+import defaultWorkspacesData from "./defaultWorkspacesData.json";
 
 export interface DefaultWorkspace {
   id: string;
@@ -12,23 +12,12 @@ export interface DefaultWorkspace {
 
 export const DEFAULT_ACTIVE_WORKSPACE_ID = "main";
 
-const defaultWorkspaceDefinitions: DefaultWorkspace[] = [
-  {
-    id: "main",
-    name: "Main",
-    isMain: true,
-    paramCount: 0,
-    initialNodes: [
-      {
-        id: "main-fn",
-        type: FunctionNode.type,
-        position: { x: 0, y: 0 },
-        data: { name: "main" },
-      },
-    ],
-    initialEdges: [],
-  },
-];
+const defaultWorkspaceDefinitions: DefaultWorkspace[] =
+  defaultWorkspacesData.map(({ nodes, edges, ...workspace }) => ({
+    ...workspace,
+    initialNodes: nodes,
+    initialEdges: edges,
+  }));
 
 function cloneGraph<T>(value: T): T {
   return structuredClone(value);

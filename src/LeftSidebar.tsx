@@ -118,8 +118,10 @@ export function LeftSidebar() {
   const mainParamNames = mainFunction?.paramNames ?? [];
 
   const [paramValues, setParamValues] = useState<Record<number, string>>({});
+  const [invalidParamIndexes, setInvalidParamIndexes] = useState<number[]>([]);
   const [compiledCode, setCompiledCode] = useState<string | null>(null);
   const [runOutput, setRunOutput] = useState<string | null>(null);
+  const paramInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const [sidebarWidth, setSidebarWidth] = useState(260);
   const isDragging = useRef(false);
@@ -173,6 +175,13 @@ export function LeftSidebar() {
   }, [compileProgram]);
 
   const handleRun = useCallback(async () => {
+    if (mainParamCount > 0 && (paramValues[0] ?? "").trim() === "") {
+      setInvalidParamIndexes([0]);
+      setRunOutput(`error: ${mainParamNames[0] ?? "arg1"} is required`);
+      paramInputRefs.current[0]?.focus();
+      return;
+    }
+
     let code: string;
     try {
       code = compileProgram();
@@ -191,8 +200,15 @@ export function LeftSidebar() {
       (_, i) => paramValues[i] ?? "",
     );
     const result = await evaluateScheme(code, paramList);
+    setInvalidParamIndexes([]);
     setRunOutput(result.ok ? result.output : `error: ${result.error}`);
-  }, [compileProgram, mainFunction, mainParamCount, paramValues]);
+  }, [
+    compileProgram,
+    mainFunction,
+    mainParamCount,
+    mainParamNames,
+    paramValues,
+  ]);
   const [saveFlash, setSaveFlash] = useState(false);
 
   const handleSave = useCallback(() => {
@@ -298,12 +314,27 @@ export function LeftSidebar() {
               {mainParamNames[i] ?? `p${i}`}
             </label>
             <input
-              className="run-param-input"
+              ref={(node) => {
+                paramInputRefs.current[i] = node;
+              }}
+              className={`run-param-input${
+                invalidParamIndexes.includes(i) ? " invalid" : ""
+              }`}
               type="text"
               value={paramValues[i] ?? ""}
-              onChange={(e) =>
-                setParamValues((prev) => ({ ...prev, [i]: e.target.value }))
-              }
+              aria-invalid={invalidParamIndexes.includes(i)}
+              onChange={(e) => {
+                const nextValue = e.target.value;
+                setParamValues((prev) => ({ ...prev, [i]: nextValue }));
+                if (
+                  invalidParamIndexes.includes(i) &&
+                  nextValue.trim() !== ""
+                ) {
+                  setInvalidParamIndexes((prev) =>
+                    prev.filter((index) => index !== i),
+                  );
+                }
+              }}
             />
           </div>
         ))}
